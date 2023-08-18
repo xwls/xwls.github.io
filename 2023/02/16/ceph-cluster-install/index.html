@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+    <title>Ubuntu 22.04 安装 ceph 集群 | 小汪老师</title>
+
+    <meta name="description" content="&lt;p&gt;在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。&lt;/p&gt;">
+    <meta name="keywords" content="">
+
+    
+
+    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content= "Ubuntu 22.04 安装 ceph 集群 | 小汪老师"  />
+    <meta property="og:description" content= "&lt;p&gt;在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。&lt;/p&gt;" />
+    <meta property="og:url" content="https://xwls.github.io/2023/02/16/ceph-cluster-install/index.html" />
+    <meta property="og:site_name" content="" />
+    <meta property="article:author" content="Wang" />
+    <meta property="article:publisher" content="" />
+    <meta property="og:description" content="&lt;p&gt;在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。&lt;/p&gt;" />
+    <meta name="twitter:title" content="Ubuntu 22.04 安装 ceph 集群 | 小汪老师"/>
+    <meta name="twitter:description" content="&lt;p&gt;在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。&lt;/p&gt;"/>
+    <script type="application/ld+json">
+        {
+            "description": "&lt;p&gt;在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。&lt;/p&gt;",
+            "author": { "@type": "Person", "name": "Wang" },
+            "@type": "BlogPosting",
+            "url": "https://xwls.github.io/2023/02/16/ceph-cluster-install/index.html",
+            "publisher": {
+            "@type": "Organization",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://xwls.github.ioundefined"
+            },
+            "name": "Wang"
+            },
+            "headline": "Ubuntu 22.04 安装 ceph 集群 | 小汪老师",
+            "datePublished": "2023-02-16T02:43:34.000Z",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://xwls.github.io/2023/02/16/ceph-cluster-install/index.html"
+            },
+            "@context": "http://schema.org"
+        }
+    </script>
+
+
+
+
+    
+
+    
+    <meta property="algolia:search" data-application-id="BTY67B9N9Q" data-api-key="f6cf80ca4d009f1bdf3237b8df3ecbe0" data-index-name="test">
+    
+
+    
+
+    
+
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/dist/build.css?v=1654266144177.css">
+
+
+    
+<link rel="stylesheet" href="/dist/custom.css?v=1654266144177.css">
+
+
+    <script>
+        window.isPost = true
+        window.aomori = {
+            
+            
+            
+        }
+        window.aomori_logo_typed_animated = true
+        window.aomori_search_algolia = true
+
+    </script>
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="小汪老师" type="application/atom+xml">
+</head>
+
+<body>
+
+    <div class="container">
+    <header class="header">
+        <div class="header-type">
+            
+            <div class="header-type-inner">
+                
+                    <div id="typed-strings" style="display:none">
+                        <p>小汪老师</p>
+                    </div>
+                    <a class="header-type-title" id="typed" href="/"></a>
+                
+    
+                
+            </div>
+        </div>
+        <div class="header-menu">
+            <div class="header-menu-inner">
+                
+                <a href="/">首页</a>
+                
+                <a href="/archives">归档</a>
+                
+                <a href="/friends">收藏</a>
+                
+                <a href="/about">关于</a>
+                
+            </div>
+            <div class="header-menu-social">
+                
+    <a class="social" target="_blank" href="https://github.com/xwls">
+        <ion-icon name="logo-github"></ion-icon>
+    </a>
+
+            </div>
+        </div>
+
+        <div class="header-menu-mobile">
+            <div class="header-menu-mobile-inner" id="mobile-menu-open">
+                <i class="icon icon-menu"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-menu-mobile-menu">
+        <div class="header-menu-mobile-menu-bg"></div>
+        <div class="header-menu-mobile-menu-wrap">
+            <div class="header-menu-mobile-menu-inner">
+                <div class="header-menu-mobile-menu-close" id="mobile-menu-close">
+                    <i class="icon icon-cross"></i>
+                </div>
+                <div class="header-menu-mobile-menu-list">
+                    
+                    <a href="/">首页</a>
+                    
+                    <a href="/archives">归档</a>
+                    
+                    <a href="/friends">收藏</a>
+                    
+                    <a href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="container">
+        <div class="main">
+            <section class="inner">
+                <section class="inner-main">
+                    <div class="post">
+    <article id="post-cllg26i3z000bfxq7a6rl5x7h" class="article article-type-post" itemscope
+    itemprop="blogPost">
+
+    <div class="article-inner">
+
+        
+          
+        
+        
+        
+
+        
+        <header class="article-header">
+            
+  
+    <h1 class="article-title" itemprop="name">
+      Ubuntu 22.04 安装 ceph 集群
+    </h1>
+  
+
+        </header>
+        
+
+        <div class="article-more-info article-more-info-post hairline">
+
+            <div class="article-date">
+  <time datetime="2023-02-16T02:43:34.000Z" itemprop="datePublished">2023-02-16</time>
+</div>
+
+            
+            <div class="article-category">
+                <a class="article-category-link" href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a>
+            </div>
+            
+
+            
+            <div class="article-tag">
+                <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/k8s/" rel="tag">k8s</a></li></ul>
+            </div>
+            
+
+            
+
+        </div>
+
+        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
+            <p>在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。</p>
+<span id="more"></span>
+
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>准备了 3 台服务器用于安装 ceph 集群，服务器信息如下：</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>IP</th>
+<th>配置</th>
+<th>磁盘</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ceph-node1</td>
+<td>192.168.56.31</td>
+<td>2 vCPU；2 GiB</td>
+<td>系统盘 40G + 数据盘 6G * 2</td>
+</tr>
+<tr>
+<td>ceph-node2</td>
+<td>192.168.56.32</td>
+<td>2 vCPU；2 GiB</td>
+<td>系统盘 40G + 数据盘 6G * 2</td>
+</tr>
+<tr>
+<td>Ceph-node3</td>
+<td>192.168.56.33</td>
+<td>2 vCPU；2 GiB</td>
+<td>系统盘 40G + 数据盘 6G * 2</td>
+</tr>
+</tbody></table>
+<h2 id="修改-hosts-文件"><a href="#修改-hosts-文件" class="headerlink" title="修改 hosts 文件"></a>修改 hosts 文件</h2><p>修改所有服务器的 hosts 文件</p>
+<pre><code class="shell">vim /etc/hosts
+192.168.56.31 ceph-node1
+192.168.56.32 ceph-node2
+192.168.56.33 ceph-node3
+</code></pre>
+<h2 id="时间同步"><a href="#时间同步" class="headerlink" title="时间同步"></a>时间同步</h2><p>所有服务器全部执行：</p>
+<pre><code class="shell"># 启用时间同步
+timedatectl set-ntp true
+# 设置时区 Asia/Shanghai
+timedatectl set-timezone Asia/Shanghai
+# 查看状态
+timedatectl status
+</code></pre>
+<h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><ul>
+<li>使用 apt 安装 docker-ce，所有服务器全部安装</li>
+</ul>
+<pre><code class="shell">apt update
+apt install docker-ce -y
+</code></pre>
+<ul>
+<li>配置 docker 国内镜像地址</li>
+</ul>
+<pre><code class="shell">tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39;
+&#123;
+  &quot;registry-mirrors&quot;: [&quot;https://y037t07z.mirror.aliyuncs.com&quot;]
+&#125;
+EOF
+systemctl restart docker
+</code></pre>
+<h2 id="SSH-免密登录"><a href="#SSH-免密登录" class="headerlink" title="SSH 免密登录"></a>SSH 免密登录</h2><p>开启 ssh 免密登录，所有服务器都需要执行</p>
+<pre><code class="shell"># 生成 ssh 密钥
+ssh-keygen -t rsa
+# 拷贝密钥
+ssh-copy-id ceph-node1 
+ssh-copy-id ceph-node2
+ssh-copy-id ceph-node3
+# 测试
+</code></pre>
+<h2 id="使用-cephadm-安装-ceph-集群"><a href="#使用-cephadm-安装-ceph-集群" class="headerlink" title="使用 cephadm 安装 ceph 集群"></a>使用 cephadm 安装 ceph 集群</h2><pre><code class="shell"># 安装 cephadm
+apt install cephadm -y
+# 启用集群
+cephadm bootstrap --mon-ip 192.168.56.31
+# 安装 ceph-cli
+apt install ceph-common -y
+# 集群状态信息
+ceph -s
+# 查看节点信息
+ceph orch host ls
+# 拷贝公钥
+ssh-copy-id -f -i /etc/ceph/ceph.pub ceph-node2
+ssh-copy-id -f -i /etc/ceph/ceph.pub ceph-node3
+# 添加节点
+ceph orch host add ceph-node2
+ceph orch host add ceph-node3
+# 查看节点信息
+ceph orch host ls
+# 添加所有可用磁盘到集群
+ceph orch apply osd --all-available-devices
+# 查看 osd 状态
+ceph osd tree
+</code></pre>
+<h2 id="ceph-dashboard"><a href="#ceph-dashboard" class="headerlink" title="ceph dashboard"></a>ceph dashboard</h2><p><a target="_blank" rel="noopener" href="https://192.168.56.31:8443/">https://192.168.56.31:8443</a></p>
+<p><img src="https://xwls-oss.netlify.app/images/202302161143406.webp" alt="dashboard"></p>
+<p><img src="https://xwls-oss.netlify.app/images/202302161144624.webp" alt="hosts"></p>
+<p><img src="https://xwls-oss.netlify.app/images/202302161333204.webp" alt="osds"></p>
+<pre><code>创建一个用户
+ceph auth get-or-create client.kubernetes mon &#39;profile rbd&#39; osd &#39;profile rbd pool=kube&#39; mgr &#39;profile rbd pool=kube&#39;
+
+[client.kubernetes]
+  key = AQDpuN1jIlPBABAAaGhYtIUSonIiHirrM9SFkQ==
+
+ceph mon dump
+
+epoch 3
+fsid 4e38b228-a375-11ed-bb7f-1f327548c6fd
+last_changed 2023-02-03T03:56:20.328724+0000
+created 2023-02-03T03:47:49.394295+0000
+min_mon_release 17 (quincy)
+election_strategy: 1
+0: [v2:192.168.56.31:3300/0,v1:192.168.56.31:6789/0] mon.ceph-node1
+1: [v2:192.168.56.32:3300/0,v1:192.168.56.32:6789/0] mon.ceph-node2
+2: [v2:192.168.56.33:3300/0,v1:192.168.56.33:6789/0] mon.ceph-node3
+
+csi-config-map.yaml
+
+apiVersion: v1
+kind: ConfigMap
+data:
+  config.json: |-
+    [
+      &#123;
+        &quot;clusterID&quot;: &quot;4e38b228-a375-11ed-bb7f-1f327548c6fd&quot;,
+        &quot;monitors&quot;: [
+          &quot;192.168.56.31:6789&quot;,
+          &quot;192.168.56.32:6789&quot;,
+          &quot;192.168.56.33:6789&quot;
+        ]
+      &#125;
+    ]
+metadata:
+  name: ceph-csi-config
+
+kubectl apply -f csi-config-map.yaml
+
+csi-kms-config-map.yaml
+
+apiVersion: v1
+kind: ConfigMap
+data:
+  config.json: |-
+    &#123;&#125;
+metadata:
+  name: ceph-csi-encryption-kms-config
+
+kubectl apply -f csi-kms-config-map.yaml
+
+ceph-config-map.yaml
+
+apiVersion: v1
+kind: ConfigMap
+data:
+  ceph.conf: |
+    [global]
+    auth_cluster_required = cephx
+    auth_service_required = cephx
+    auth_client_required = cephx
+
+# keyring is a required key and its value should be empty
+
+  keyring: |
+metadata:
+  name: ceph-config
+
+kubectl apply -f ceph-config-map.yaml
+
+csi-rbd-secret.yaml
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: csi-rbd-secret
+  namespace: default
+stringData:
+  userID: kubernetes
+  userKey: AQDpuN1jIlPBABAAaGhYtIUSonIiHirrM9SFkQ==
+
+kubectl apply -f csi-rbd-secret.yaml
+
+$ kubectl apply -f &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-provisioner-rbac.yaml&gt;
+$ kubectl apply -f &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-nodeplugin-rbac.yaml&gt;
+
+$ wget &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-rbdplugin-provisioner.yaml&gt;
+$ kubectl apply -f csi-rbdplugin-provisioner.yaml
+$ wget &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-rbdplugin.yaml&gt;
+$ kubectl apply -f csi-rbdplugin.yaml
+
+csi-rbd-sc.yaml
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: csi-rbd-sc
+provisioner: rbd.csi.ceph.com
+parameters:
+   clusterID: b9127830-b0cc-4e34-aa47-9d1a2e9949a8
+   pool: kubernetes
+   imageFeatures: layering
+   csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret
+   csi.storage.k8s.io/provisioner-secret-namespace: default
+   csi.storage.k8s.io/controller-expand-secret-name: csi-rbd-secret
+   csi.storage.k8s.io/controller-expand-secret-namespace: default
+   csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret
+   csi.storage.k8s.io/node-stage-secret-namespace: default
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+mountOptions:
+
+* discard
+</code></pre>
+
+        </div>
+
+    </div>
+
+    
+
+    
+
+    
+
+    
+  <div class="article-copyright hairline">
+    <p>
+      本作品采用  <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议 (CC BY-NC-ND 4.0)</a> 进行许可。
+    </p>
+  </div>
+  
+
+    
+
+    
+<nav class="article-nav">
+  
+  
+    <a href="/2023/02/02/k8s-ingress-canary/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-caption">上一篇</div>
+      <div class="article-nav-title">k8s 通过 Ingress 进行灰度发布</div>
+    </a>
+  
+</nav>
+
+
+    <section class="share">
+        <div class="share-title">分享</div>
+        <a class="share-item" target="_blank"
+            href="https://twitter.com/share?text=Ubuntu 22.04 安装 ceph 集群 - 小汪老师&url=https%3A%2F%2Fxwls.github.io%2F2023%2F02%2F16%2Fceph-cluster-install%2F">
+            <ion-icon name="logo-twitter"></ion-icon>
+        </a>
+        <a class="share-item" target="_blank"
+            href="https://www.facebook.com/sharer.php?title=Ubuntu 22.04 安装 ceph 集群 - 小汪老师&u=https%3A%2F%2Fxwls.github.io%2F2023%2F02%2F16%2Fceph-cluster-install%2F">
+            <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <!-- <a class="share-item" target="_blank"
+            href="https://service.weibo.com/share/share.php?title=Ubuntu 22.04 安装 ceph 集群 - 小汪老师&url=https://xwls.github.io/2023/02/16/ceph-cluster-install/&pic=">
+            <div class="n-icon n-icon-weibo"></div>
+        </a> -->
+    </section>
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+                </section>
+            </section>
+
+            
+            <aside class="sidebar sidebar-search-fix">
+                
+
+    <div class="search">
+    <div class="has-icon-right">
+        <input type="text" class="form-input" id="search" placeholder="SEARCH" autocomplete="off">
+        <div class="form-icon">
+            <ion-icon name="search"></ion-icon>
+        </div>
+    </div>
+    <div class="search-result" id="search-ps"></div>
+</div>
+
+
+<div class="widget" id="widget">
+    
+      
+  <div class="widget-wrap">
+    <div class="widget-inner">
+      <div class="toc post-toc-html"></div>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-cate">
+    <div class="widget-title"><span>Categories</span></div>
+    <div class="widget-inner">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Util/">Util</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/">小技巧</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-recent-posts">
+    <div class="widget-title"><span>Recent Posts</span></div>
+    <div class="widget-inner">
+      <ul>
+        
+          <li>
+            <a href="/2023/02/16/ceph-cluster-install/">Ubuntu 22.04 安装 ceph 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-ingress-canary/">k8s 通过 Ingress 进行灰度发布</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-storgeclass-nfs/">k8s 存储类 nfs 网络存储</a>
+          </li>
+        
+          <li>
+            <a href="/2023/01/05/git-statistics/">git 统计代码量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/19/macos-minikube-k8s/">MacOS 使用 minikube 搭建 Kubernetes 环境</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-archive">
+    <div class="widget-title"><span>Archive</span></div>
+    <div class="widget-inner">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a></li></ul>
+    </div>
+  </div>
+
+
+    
+</div>
+
+<div id="backtop"><i class="icon icon-arrow-up"></i></div>
+            </aside>
+            
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-wave">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#3c4859" fill-opacity="1" d="M0,160L60,181.3C120,203,240,245,360,240C480,235,600,181,720,186.7C840,192,960,256,1080,261.3C1200,267,1320,213,1380,186.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
+    </div>
+
+    <!-- Please do not remove this -->
+    <!-- 开源不易，请勿删除 -->
+    <div class="footer-wrap">
+        <div class="footer-inner"> 
+            小汪老师 &copy; 2023<br>
+            Powered By Hexo · Theme By <a href="https://linhong.me/" target="_blank">Aomori</a> · <a href="https://github.com/lh1me/hexo-theme-aomori" target="_blank">Github</a>
+        </div>
+    </div>
+
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@6.0.2/dist/ionicons/ionicons.esm.js"></script>
+
+
+
+
+
+
+<script src="/dist/build.js?1654266144177.js"></script>
+
+
+<script src="/dist/custom.js?1654266144177.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

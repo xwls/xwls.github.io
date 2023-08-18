@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+    <title>Docker 搭建 Redis 集群 | 小汪老师</title>
+
+    <meta name="description" content="&lt;p&gt;使用 docker 创建 redis 集群。&lt;/p&gt;">
+    <meta name="keywords" content="">
+
+    
+
+    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content= "Docker 搭建 Redis 集群 | 小汪老师"  />
+    <meta property="og:description" content= "&lt;p&gt;使用 docker 创建 redis 集群。&lt;/p&gt;" />
+    <meta property="og:url" content="https://xwls.github.io/2022/10/18/docker-redis-cluster/index.html" />
+    <meta property="og:site_name" content="" />
+    <meta property="article:author" content="Wang" />
+    <meta property="article:publisher" content="" />
+    <meta property="og:description" content="&lt;p&gt;使用 docker 创建 redis 集群。&lt;/p&gt;" />
+    <meta name="twitter:title" content="Docker 搭建 Redis 集群 | 小汪老师"/>
+    <meta name="twitter:description" content="&lt;p&gt;使用 docker 创建 redis 集群。&lt;/p&gt;"/>
+    <script type="application/ld+json">
+        {
+            "description": "&lt;p&gt;使用 docker 创建 redis 集群。&lt;/p&gt;",
+            "author": { "@type": "Person", "name": "Wang" },
+            "@type": "BlogPosting",
+            "url": "https://xwls.github.io/2022/10/18/docker-redis-cluster/index.html",
+            "publisher": {
+            "@type": "Organization",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://xwls.github.ioundefined"
+            },
+            "name": "Wang"
+            },
+            "headline": "Docker 搭建 Redis 集群 | 小汪老师",
+            "datePublished": "2022-10-18T08:15:27.000Z",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://xwls.github.io/2022/10/18/docker-redis-cluster/index.html"
+            },
+            "@context": "http://schema.org"
+        }
+    </script>
+
+
+
+
+    
+
+    
+    <meta property="algolia:search" data-application-id="BTY67B9N9Q" data-api-key="f6cf80ca4d009f1bdf3237b8df3ecbe0" data-index-name="test">
+    
+
+    
+
+    
+
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/dist/build.css?v=1654266144177.css">
+
+
+    
+<link rel="stylesheet" href="/dist/custom.css?v=1654266144177.css">
+
+
+    <script>
+        window.isPost = true
+        window.aomori = {
+            
+            
+            
+        }
+        window.aomori_logo_typed_animated = true
+        window.aomori_search_algolia = true
+
+    </script>
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="小汪老师" type="application/atom+xml">
+</head>
+
+<body>
+
+    <div class="container">
+    <header class="header">
+        <div class="header-type">
+            
+            <div class="header-type-inner">
+                
+                    <div id="typed-strings" style="display:none">
+                        <p>小汪老师</p>
+                    </div>
+                    <a class="header-type-title" id="typed" href="/"></a>
+                
+    
+                
+            </div>
+        </div>
+        <div class="header-menu">
+            <div class="header-menu-inner">
+                
+                <a href="/">首页</a>
+                
+                <a href="/archives">归档</a>
+                
+                <a href="/friends">收藏</a>
+                
+                <a href="/about">关于</a>
+                
+            </div>
+            <div class="header-menu-social">
+                
+    <a class="social" target="_blank" href="https://github.com/xwls">
+        <ion-icon name="logo-github"></ion-icon>
+    </a>
+
+            </div>
+        </div>
+
+        <div class="header-menu-mobile">
+            <div class="header-menu-mobile-inner" id="mobile-menu-open">
+                <i class="icon icon-menu"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-menu-mobile-menu">
+        <div class="header-menu-mobile-menu-bg"></div>
+        <div class="header-menu-mobile-menu-wrap">
+            <div class="header-menu-mobile-menu-inner">
+                <div class="header-menu-mobile-menu-close" id="mobile-menu-close">
+                    <i class="icon icon-cross"></i>
+                </div>
+                <div class="header-menu-mobile-menu-list">
+                    
+                    <a href="/">首页</a>
+                    
+                    <a href="/archives">归档</a>
+                    
+                    <a href="/friends">收藏</a>
+                    
+                    <a href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="container">
+        <div class="main">
+            <section class="inner">
+                <section class="inner-main">
+                    <div class="post">
+    <article id="post-cllg26i43000gfxq7cnjle7z9" class="article article-type-post" itemscope
+    itemprop="blogPost">
+
+    <div class="article-inner">
+
+        
+          
+        
+        
+        
+
+        
+        <header class="article-header">
+            
+  
+    <h1 class="article-title" itemprop="name">
+      Docker 搭建 Redis 集群
+    </h1>
+  
+
+        </header>
+        
+
+        <div class="article-more-info article-more-info-post hairline">
+
+            <div class="article-date">
+  <time datetime="2022-10-18T08:15:27.000Z" itemprop="datePublished">2022-10-18</time>
+</div>
+
+            
+            <div class="article-category">
+                <a class="article-category-link" href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a>
+            </div>
+            
+
+            
+            <div class="article-tag">
+                <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9B%86%E7%BE%A4/" rel="tag">集群</a></li></ul>
+            </div>
+            
+
+            
+
+        </div>
+
+        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
+            <p>使用 docker 创建 redis 集群。</p>
+<span id="more"></span>
+
+<h2 id="拉取-redis-镜像"><a href="#拉取-redis-镜像" class="headerlink" title="拉取 redis 镜像"></a>拉取 redis 镜像</h2><pre><code class="bash">docker pull redis
+</code></pre>
+<h2 id="创建-redis-配置文件"><a href="#创建-redis-配置文件" class="headerlink" title="创建 redis 配置文件"></a>创建 redis 配置文件</h2><pre><code class="bash">for port in $(seq 6379 6384); 
+do 
+mkdir -p /home/redis/node-$&#123;port&#125;/conf
+touch /home/redis/node-$&#123;port&#125;/conf/redis.conf
+cat  &lt;&lt; EOF &gt; /home/redis/node-$&#123;port&#125;/conf/redis.conf
+port $&#123;port&#125;
+requirepass 1234
+bind 0.0.0.0
+protected-mode no
+daemonize no
+appendonly yes
+cluster-enabled yes 
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+cluster-announce-ip  服务器就填公网 ip，或者内部对应容器的 ip
+cluster-announce-port $&#123;port&#125;
+cluster-announce-bus-port 1$&#123;port&#125;
+EOF
+done
+</code></pre>
+<ul>
+<li>效果</li>
+</ul>
+<pre><code class="bash">[root@iZuf6brvjzmnf06szlrk7oZ ~]# cd /home/redis/
+[root@iZuf6brvjzmnf06szlrk7oZ redis]# tree
+.
+├── node-6379
+│   └── conf
+│       └── redis.conf
+├── node-6380
+│   └── conf
+│       └── redis.conf
+├── node-6381
+│   └── conf
+│       └── redis.conf
+├── node-6382
+│   └── conf
+│       └── redis.conf
+├── node-6383
+│   └── conf
+│       └── redis.conf
+└── node-6384
+    └── conf
+        └── redis.conf
+
+12 directories, 6 files
+</code></pre>
+<h2 id="启动-redis"><a href="#启动-redis" class="headerlink" title="启动 redis"></a>启动 redis</h2><pre><code class="bash">for port in $(seq 6379 6384); \
+do \
+   docker run -it -d -p $&#123;port&#125;:$&#123;port&#125; -p 1$&#123;port&#125;:1$&#123;port&#125; \
+  --privileged=true -v /home/redis/node-$&#123;port&#125;/conf/redis.conf:/usr/local/etc/redis/redis.conf \
+  --privileged=true -v /home/redis/node-$&#123;port&#125;/data:/data \
+  --restart always --name redis-$&#123;port&#125; --net myredis \
+  --sysctl net.core.somaxconn=1024 redis redis-server /usr/local/etc/redis/redis.conf
+done
+</code></pre>
+<ul>
+<li>效果</li>
+</ul>
+<pre><code class="bash">[root@iZuf6brvjzmnf06szlrk7oZ redis]# for port in $(seq 6379 6384); \
+&gt; do \
+&gt;    docker run -it -d -p $&#123;port&#125;:$&#123;port&#125; -p 1$&#123;port&#125;:1$&#123;port&#125; \
+&gt;   --privileged=true -v /home/redis/node-$&#123;port&#125;/conf/redis.conf:/usr/local/etc/redis/redis.conf \
+&gt;   --privileged=true -v /home/redis/node-$&#123;port&#125;/data:/data \
+&gt;   --restart always --name redis-$&#123;port&#125; --net myredis \
+&gt;   --sysctl net.core.somaxconn=1024 redis redis-server /usr/local/etc/redis/redis.conf
+&gt; done
+c456167625319a7177036b09d516ff0813a31d61dbb24273ce1d1ff041f3f621
+3fc3c14204e9c9b2e80211f13c68a8cc8e1ee65c26683078453ec2052f0b6b53
+b04bb20f74e5e418e5588f1cc67e5aaf1a66e210f86f7ee1b433c489b157da0b
+5a501f0f18a9891246aa70cfc0f770f6e311ad6888004cb46e59f24185f59991
+13d7a9dcdc44d74592b25c12ea8e5d204bbd25200231f8fe9a55e5eac7803326
+ad3e265183d8815e29d19d488bb357d6fb931949eda46dbfc95018b32e51cf85
+</code></pre>
+<h2 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h2><pre><code class="bash"># 进入容器 bash
+docker exec -it redis-6379 /bin/bash
+# 创建集群
+redis-cli  -a 1234 --cluster create 47.103.58.89:6379 47.103.58.89:6380 47.103.58.89:6381 47.103.58.89:6382 47.103.58.89:6383 47.103.58.89:6384 --cluster-replicas 1
+</code></pre>
+<ul>
+<li>效果</li>
+</ul>
+<pre><code class="bash">[root@iZuf6brvjzmnf06szlrk7oZ redis]# docker exec -it redis-6379 /bin/bash
+root@c45616762531:/data# redis-cli  -a 1234 --cluster create 47.103.58.89:6379 47.103.58.89:6380 47.103.58.89:6381 47.103.58.89:6382 47.103.58.89:6383 47.103.58.89:6384 --cluster-replicas 1
+Warning: Using a password with &#39;-a&#39; or &#39;-u&#39; option on the command line interface may not be safe.
+&gt;&gt;&gt; Performing hash slots allocation on 6 nodes...
+Master[0] -&gt; Slots 0 - 5460
+Master[1] -&gt; Slots 5461 - 10922
+Master[2] -&gt; Slots 10923 - 16383
+Adding replica 47.103.58.89:6383 to 47.103.58.89:6379
+Adding replica 47.103.58.89:6384 to 47.103.58.89:6380
+Adding replica 47.103.58.89:6382 to 47.103.58.89:6381
+&gt;&gt;&gt; Trying to optimize slaves allocation for anti-affinity
+[WARNING] Some slaves are in the same host as their master
+M: 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 47.103.58.89:6379
+   slots:[0-5460] (5461 slots) master
+M: 8e833d82ff85892646552e4cfda9f5d024ce7dc9 47.103.58.89:6380
+   slots:[5461-10922] (5462 slots) master
+M: 535cd50270c353ca0e9196e09203d846788cf67a 47.103.58.89:6381
+   slots:[10923-16383] (5461 slots) master
+S: af331e16ecd61119e6b627fbd27590f3ffaae26a 47.103.58.89:6382
+   replicates 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d
+S: 34067385c2b8152575b83428d0cdcb50e1b837d5 47.103.58.89:6383
+   replicates 8e833d82ff85892646552e4cfda9f5d024ce7dc9
+S: fdca52748b918280deaa05bce48a214f4a365041 47.103.58.89:6384
+   replicates 535cd50270c353ca0e9196e09203d846788cf67a
+Can I set the above configuration? (type &#39;yes&#39; to accept): yes
+&gt;&gt;&gt; Nodes configuration updated
+&gt;&gt;&gt; Assign a different config epoch to each node
+&gt;&gt;&gt; Sending CLUSTER MEET messages to join the cluster
+Waiting for the cluster to join
+..
+&gt;&gt;&gt; Performing Cluster Check (using node 47.103.58.89:6379)
+M: 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 47.103.58.89:6379
+   slots:[0-5460] (5461 slots) master
+   1 additional replica(s)
+S: af331e16ecd61119e6b627fbd27590f3ffaae26a 47.103.58.89:6382
+   slots: (0 slots) slave
+   replicates 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d
+S: fdca52748b918280deaa05bce48a214f4a365041 47.103.58.89:6384
+   slots: (0 slots) slave
+   replicates 535cd50270c353ca0e9196e09203d846788cf67a
+S: 34067385c2b8152575b83428d0cdcb50e1b837d5 47.103.58.89:6383
+   slots: (0 slots) slave
+   replicates 8e833d82ff85892646552e4cfda9f5d024ce7dc9
+M: 535cd50270c353ca0e9196e09203d846788cf67a 47.103.58.89:6381
+   slots:[10923-16383] (5461 slots) master
+   1 additional replica(s)
+M: 8e833d82ff85892646552e4cfda9f5d024ce7dc9 47.103.58.89:6380
+   slots:[5461-10922] (5462 slots) master
+   1 additional replica(s)
+[OK] All nodes agree about slots configuration.
+&gt;&gt;&gt; Check for open slots...
+&gt;&gt;&gt; Check slots coverage...
+[OK] All 16384 slots covered.
+</code></pre>
+<h2 id="查看集群信息"><a href="#查看集群信息" class="headerlink" title="查看集群信息"></a>查看集群信息</h2><pre><code class="bash"># 连接 redis
+redis-cli -c -a 1234
+# 查看集群信息
+CLUSTER INFO
+# 查看节点信息
+CLUSTER NODES
+</code></pre>
+<ul>
+<li>效果</li>
+</ul>
+<pre><code class="bash">127.0.0.1:6379&gt; CLUSTER INFO
+cluster_state:ok
+cluster_slots_assigned:16384
+cluster_slots_ok:16384
+cluster_slots_pfail:0
+cluster_slots_fail:0
+cluster_known_nodes:6
+cluster_size:3
+cluster_current_epoch:6
+cluster_my_epoch:1
+cluster_stats_messages_ping_sent:81
+cluster_stats_messages_pong_sent:90
+cluster_stats_messages_sent:171
+cluster_stats_messages_ping_received:85
+cluster_stats_messages_pong_received:79
+cluster_stats_messages_meet_received:5
+cluster_stats_messages_received:169
+total_cluster_links_buffer_limit_exceeded:0
+127.0.0.1:6379&gt; CLUSTER NODES
+af331e16ecd61119e6b627fbd27590f3ffaae26a 47.103.58.89:6382@16382 slave 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 0 1666080700700 1 connected
+3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 47.103.58.89:6379@16379 myself,master - 0 1666080699000 1 connected 0-5460
+fdca52748b918280deaa05bce48a214f4a365041 47.103.58.89:6384@16384 slave 535cd50270c353ca0e9196e09203d846788cf67a 0 1666080700000 3 connected
+34067385c2b8152575b83428d0cdcb50e1b837d5 47.103.58.89:6383@16383 slave 8e833d82ff85892646552e4cfda9f5d024ce7dc9 0 1666080700820 2 connected
+535cd50270c353ca0e9196e09203d846788cf67a 47.103.58.89:6381@16381 master - 0 1666080700644 3 connected 10923-16383
+8e833d82ff85892646552e4cfda9f5d024ce7dc9 47.103.58.89:6380@16380 master - 0 1666080699697 2 connected 5461-10922
+</code></pre>
+
+        </div>
+
+    </div>
+
+    
+
+    
+<div class="article-reprint hairline">
+  
+    <p>
+      文章转载自 <a target="_blank" href="https://juejin.cn/post/6992872034065727525">https://juejin.cn/post/6992872034065727525</a>
+    </p>
+  
+</div>
+
+
+    
+
+    
+  <div class="article-copyright hairline">
+    <p>
+      本作品采用  <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议 (CC BY-NC-ND 4.0)</a> 进行许可。
+    </p>
+  </div>
+  
+
+    
+
+    
+<nav class="article-nav">
+  
+    <a href="/2022/10/19/macos-minikube-k8s/" id="article-nav-newer" class="article-nav-link-wrap">
+      <div class="article-nav-caption">下一篇</div>
+      <div class="article-nav-title">
+        
+          MacOS 使用 minikube 搭建 Kubernetes 环境
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/10/17/mybatis-call-procedure/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-caption">上一篇</div>
+      <div class="article-nav-title">MyBatis 调用数据库存储过程</div>
+    </a>
+  
+</nav>
+
+
+    <section class="share">
+        <div class="share-title">分享</div>
+        <a class="share-item" target="_blank"
+            href="https://twitter.com/share?text=Docker 搭建 Redis 集群 - 小汪老师&url=https%3A%2F%2Fxwls.github.io%2F2022%2F10%2F18%2Fdocker-redis-cluster%2F">
+            <ion-icon name="logo-twitter"></ion-icon>
+        </a>
+        <a class="share-item" target="_blank"
+            href="https://www.facebook.com/sharer.php?title=Docker 搭建 Redis 集群 - 小汪老师&u=https%3A%2F%2Fxwls.github.io%2F2022%2F10%2F18%2Fdocker-redis-cluster%2F">
+            <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <!-- <a class="share-item" target="_blank"
+            href="https://service.weibo.com/share/share.php?title=Docker 搭建 Redis 集群 - 小汪老师&url=https://xwls.github.io/2022/10/18/docker-redis-cluster/&pic=">
+            <div class="n-icon n-icon-weibo"></div>
+        </a> -->
+    </section>
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+                </section>
+            </section>
+
+            
+            <aside class="sidebar sidebar-search-fix">
+                
+
+    <div class="search">
+    <div class="has-icon-right">
+        <input type="text" class="form-input" id="search" placeholder="SEARCH" autocomplete="off">
+        <div class="form-icon">
+            <ion-icon name="search"></ion-icon>
+        </div>
+    </div>
+    <div class="search-result" id="search-ps"></div>
+</div>
+
+
+<div class="widget" id="widget">
+    
+      
+  <div class="widget-wrap">
+    <div class="widget-inner">
+      <div class="toc post-toc-html"></div>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-cate">
+    <div class="widget-title"><span>Categories</span></div>
+    <div class="widget-inner">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Util/">Util</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/">小技巧</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-recent-posts">
+    <div class="widget-title"><span>Recent Posts</span></div>
+    <div class="widget-inner">
+      <ul>
+        
+          <li>
+            <a href="/2023/02/16/ceph-cluster-install/">Ubuntu 22.04 安装 ceph 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-ingress-canary/">k8s 通过 Ingress 进行灰度发布</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-storgeclass-nfs/">k8s 存储类 nfs 网络存储</a>
+          </li>
+        
+          <li>
+            <a href="/2023/01/05/git-statistics/">git 统计代码量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/19/macos-minikube-k8s/">MacOS 使用 minikube 搭建 Kubernetes 环境</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-archive">
+    <div class="widget-title"><span>Archive</span></div>
+    <div class="widget-inner">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a></li></ul>
+    </div>
+  </div>
+
+
+    
+</div>
+
+<div id="backtop"><i class="icon icon-arrow-up"></i></div>
+            </aside>
+            
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-wave">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#3c4859" fill-opacity="1" d="M0,160L60,181.3C120,203,240,245,360,240C480,235,600,181,720,186.7C840,192,960,256,1080,261.3C1200,267,1320,213,1380,186.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
+    </div>
+
+    <!-- Please do not remove this -->
+    <!-- 开源不易，请勿删除 -->
+    <div class="footer-wrap">
+        <div class="footer-inner"> 
+            小汪老师 &copy; 2023<br>
+            Powered By Hexo · Theme By <a href="https://linhong.me/" target="_blank">Aomori</a> · <a href="https://github.com/lh1me/hexo-theme-aomori" target="_blank">Github</a>
+        </div>
+    </div>
+
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@6.0.2/dist/ionicons/ionicons.esm.js"></script>
+
+
+
+
+
+
+<script src="/dist/build.js?1654266144177.js"></script>
+
+
+<script src="/dist/custom.js?1654266144177.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

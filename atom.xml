@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>小汪老师</title>
+  
+  <subtitle>随笔、记录、踩坑、转载</subtitle>
+  <link href="https://xwls.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://xwls.github.io/"/>
+  <updated>2023-08-18T03:56:18.118Z</updated>
+  <id>https://xwls.github.io/</id>
+  
+  <author>
+    <name>Wang</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ubuntu 22.04 安装 ceph 集群</title>
+    <link href="https://xwls.github.io/2023/02/16/ceph-cluster-install/"/>
+    <id>https://xwls.github.io/2023/02/16/ceph-cluster-install/</id>
+    <published>2023-02-16T02:43:34.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。</p><span id="more"></span><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>准备了 3 台服务器用于安装 ceph 集群，服务器信息如下：</p><table><thead><tr><th>主机名</th><th>IP</th><th>配置</th><th>磁盘</th></tr></thead><tbody><tr><td>ceph-node1</td><td>192.168.56.31</td><td>2 vCPU；2 GiB</td><td>系统盘 40G + 数据盘 6G * 2</td></tr><tr><td>ceph-node2</td><td>192.168.56.32</td><td>2 vCPU；2 GiB</td><td>系统盘 40G + 数据盘 6G * 2</td></tr><tr><td>Ceph-node3</td><td>192.168.56.33</td><td>2 vCPU；2 GiB</td><td>系统盘 40G + 数据盘 6G * 2</td></tr></tbody></table><h2 id="修改-hosts-文件"><a href="#修改-hosts-文件" class="headerlink" title="修改 hosts 文件"></a>修改 hosts 文件</h2><p>修改所有服务器的 hosts 文件</p><pre><code class="shell">vim /etc/hosts192.168.56.31 ceph-node1192.168.56.32 ceph-node2192.168.56.33 ceph-node3</code></pre><h2 id="时间同步"><a href="#时间同步" class="headerlink" title="时间同步"></a>时间同步</h2><p>所有服务器全部执行：</p><pre><code class="shell"># 启用时间同步timedatectl set-ntp true# 设置时区 Asia/Shanghaitimedatectl set-timezone Asia/Shanghai# 查看状态timedatectl status</code></pre><h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><ul><li>使用 apt 安装 docker-ce，所有服务器全部安装</li></ul><pre><code class="shell">apt updateapt install docker-ce -y</code></pre><ul><li>配置 docker 国内镜像地址</li></ul><pre><code class="shell">tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39;&#123;  &quot;registry-mirrors&quot;: [&quot;https://y037t07z.mirror.aliyuncs.com&quot;]&#125;EOFsystemctl restart docker</code></pre><h2 id="SSH-免密登录"><a href="#SSH-免密登录" class="headerlink" title="SSH 免密登录"></a>SSH 免密登录</h2><p>开启 ssh 免密登录，所有服务器都需要执行</p><pre><code class="shell"># 生成 ssh 密钥ssh-keygen -t rsa# 拷贝密钥ssh-copy-id ceph-node1 ssh-copy-id ceph-node2ssh-copy-id ceph-node3# 测试</code></pre><h2 id="使用-cephadm-安装-ceph-集群"><a href="#使用-cephadm-安装-ceph-集群" class="headerlink" title="使用 cephadm 安装 ceph 集群"></a>使用 cephadm 安装 ceph 集群</h2><pre><code class="shell"># 安装 cephadmapt install cephadm -y# 启用集群cephadm bootstrap --mon-ip 192.168.56.31# 安装 ceph-cliapt install ceph-common -y# 集群状态信息ceph -s# 查看节点信息ceph orch host ls# 拷贝公钥ssh-copy-id -f -i /etc/ceph/ceph.pub ceph-node2ssh-copy-id -f -i /etc/ceph/ceph.pub ceph-node3# 添加节点ceph orch host add ceph-node2ceph orch host add ceph-node3# 查看节点信息ceph orch host ls# 添加所有可用磁盘到集群ceph orch apply osd --all-available-devices# 查看 osd 状态ceph osd tree</code></pre><h2 id="ceph-dashboard"><a href="#ceph-dashboard" class="headerlink" title="ceph dashboard"></a>ceph dashboard</h2><p><a href="https://192.168.56.31:8443/">https://192.168.56.31:8443</a></p><p><img src="https://xwls-oss.netlify.app/images/202302161143406.webp" alt="dashboard"></p><p><img src="https://xwls-oss.netlify.app/images/202302161144624.webp" alt="hosts"></p><p><img src="https://xwls-oss.netlify.app/images/202302161333204.webp" alt="osds"></p><pre><code>创建一个用户ceph auth get-or-create client.kubernetes mon &#39;profile rbd&#39; osd &#39;profile rbd pool=kube&#39; mgr &#39;profile rbd pool=kube&#39;[client.kubernetes]  key = AQDpuN1jIlPBABAAaGhYtIUSonIiHirrM9SFkQ==ceph mon dumpepoch 3fsid 4e38b228-a375-11ed-bb7f-1f327548c6fdlast_changed 2023-02-03T03:56:20.328724+0000created 2023-02-03T03:47:49.394295+0000min_mon_release 17 (quincy)election_strategy: 10: [v2:192.168.56.31:3300/0,v1:192.168.56.31:6789/0] mon.ceph-node11: [v2:192.168.56.32:3300/0,v1:192.168.56.32:6789/0] mon.ceph-node22: [v2:192.168.56.33:3300/0,v1:192.168.56.33:6789/0] mon.ceph-node3csi-config-map.yamlapiVersion: v1kind: ConfigMapdata:  config.json: |-    [      &#123;        &quot;clusterID&quot;: &quot;4e38b228-a375-11ed-bb7f-1f327548c6fd&quot;,        &quot;monitors&quot;: [          &quot;192.168.56.31:6789&quot;,          &quot;192.168.56.32:6789&quot;,          &quot;192.168.56.33:6789&quot;        ]      &#125;    ]metadata:  name: ceph-csi-configkubectl apply -f csi-config-map.yamlcsi-kms-config-map.yamlapiVersion: v1kind: ConfigMapdata:  config.json: |-    &#123;&#125;metadata:  name: ceph-csi-encryption-kms-configkubectl apply -f csi-kms-config-map.yamlceph-config-map.yamlapiVersion: v1kind: ConfigMapdata:  ceph.conf: |    [global]    auth_cluster_required = cephx    auth_service_required = cephx    auth_client_required = cephx# keyring is a required key and its value should be empty  keyring: |metadata:  name: ceph-configkubectl apply -f ceph-config-map.yamlcsi-rbd-secret.yamlapiVersion: v1kind: Secretmetadata:  name: csi-rbd-secret  namespace: defaultstringData:  userID: kubernetes  userKey: AQDpuN1jIlPBABAAaGhYtIUSonIiHirrM9SFkQ==kubectl apply -f csi-rbd-secret.yaml$ kubectl apply -f &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-provisioner-rbac.yaml&gt;$ kubectl apply -f &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-nodeplugin-rbac.yaml&gt;$ wget &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-rbdplugin-provisioner.yaml&gt;$ kubectl apply -f csi-rbdplugin-provisioner.yaml$ wget &lt;https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-rbdplugin.yaml&gt;$ kubectl apply -f csi-rbdplugin.yamlcsi-rbd-sc.yamlapiVersion: storage.k8s.io/v1kind: StorageClassmetadata:   name: csi-rbd-scprovisioner: rbd.csi.ceph.comparameters:   clusterID: b9127830-b0cc-4e34-aa47-9d1a2e9949a8   pool: kubernetes   imageFeatures: layering   csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret   csi.storage.k8s.io/provisioner-secret-namespace: default   csi.storage.k8s.io/controller-expand-secret-name: csi-rbd-secret   csi.storage.k8s.io/controller-expand-secret-namespace: default   csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret   csi.storage.k8s.io/node-stage-secret-namespace: defaultreclaimPolicy: DeleteallowVolumeExpansion: truemountOptions:* discard</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="https://xwls.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="k8s" scheme="https://xwls.github.io/tags/k8s/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>k8s 通过 Ingress 进行灰度发布</title>
+    <link href="https://xwls.github.io/2023/02/02/k8s-ingress-canary/"/>
+    <id>https://xwls.github.io/2023/02/02/k8s-ingress-canary/</id>
+    <published>2023-02-02T03:03:34.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>k8s 通过 Ingress 通过设置 权重&#x2F;请求头 进行灰度发布。</p><span id="more"></span><h2 id="部署-Deployment-V1-应用"><a href="#部署-Deployment-V1-应用" class="headerlink" title="部署 Deployment V1 应用"></a>部署 Deployment V1 应用</h2><p>本步骤指导你如何部署 Deployment V1 应用，并使用 Ingress 实现 Deployment V1 应用的外部访问。</p><p>执行如下命令，创建名为 app-v1.yaml 的 YAML 文件。</p><pre><code class="yaml">apiVersion: v1kind: Servicemetadata:  name: my-app-v1  labels:    app: my-appspec:  ports:  - name: http    port: 80    targetPort: http  selector:    app: my-app    version: v1.0.0---apiVersion: apps/v1kind: Deploymentmetadata:  name: my-app-v1  labels:    app: my-appspec:  replicas: 1  selector:    matchLabels:      app: my-app      version: v1.0.0  template:    metadata:      labels:        app: my-app        version: v1.0.0      annotations:        prometheus.io/scrape: &quot;true&quot;        prometheus.io/port: &quot;9101&quot;    spec:      containers:      - name: my-app        image: registry.cn-hangzhou.aliyuncs.com/containerdemo/containersol-k8s-deployment-strategies        ports:        - name: http          containerPort: 8080        - name: probe          containerPort: 8086        env:        - name: VERSION          value: v1.0.0        livenessProbe:          httpGet:            path: /live            port: probe          initialDelaySeconds: 5          periodSeconds: 5        readinessProbe:          httpGet:            path: /ready            port: probe          periodSeconds: 5</code></pre><p>执行如下命令，部署 Deployement V1 应用。</p><pre><code class="shell">kubectl apply -f app-v1.yaml</code></pre><p>执行如下命令，创建名为 ingress-v1.yaml 的 Ingress YAML 文件。</p><p>将如下代码复制到文件中，并将 hots 参数中的<code>集群id</code>修改为<code>k8s集群id</code>。</p><blockquote><p>说明：您可在云产品资源列表中查看 k8s 集群id。</p></blockquote><pre><code class="yaml">apiVersion: networking.k8s.io/v1kind: Ingressmetadata:  name: my-app  labels:    app: my-appspec:  rules:  - host: my-app.集群id.cn-shanghai.alicontainer.com    http:      paths:      - backend:          service:            name: my-app-v1            port:              number: 80        path: /        pathType: Prefix</code></pre><p>执行如下命令，部署 Ingress 资源。</p><pre><code class="shell">kubectl apply -f ingress-v1.yaml</code></pre><p>执行如下命令，进行测试。</p><pre><code class="shell">curl my-app.&lt;集群id&gt;.cn-shanghai.alicontainer.com</code></pre><p>返回结果如下，表示您已成功访问到 Deployment V1 应用。</p><pre><code class="text">Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0</code></pre><h2 id="部署-Deployment-V2-应用"><a href="#部署-Deployment-V2-应用" class="headerlink" title="部署 Deployment V2 应用"></a>部署 Deployment V2 应用</h2><p>本步骤指导你如何部署 Deployment V2 应用。</p><p>执行如下命令，创建名为 app-v2.yaml 的 YAML 文件。将如下代码复制到文件中。</p><pre><code class="yaml">apiVersion: v1kind: Servicemetadata:  name: my-app-v2  labels:    app: my-appspec:  ports:  - name: http    port: 80    targetPort: http  selector:    app: my-app    version: v2.0.0---apiVersion: apps/v1kind: Deploymentmetadata:  name: my-app-v2  labels:    app: my-appspec:  replicas: 1  selector:    matchLabels:      app: my-app      version: v2.0.0  template:    metadata:      labels:        app: my-app        version: v2.0.0      annotations:        prometheus.io/scrape: &quot;true&quot;        prometheus.io/port: &quot;9101&quot;    spec:      containers:      - name: my-app        image: registry.cn-hangzhou.aliyuncs.com/containerdemo/containersol-k8s-deployment-strategies        ports:        - name: http          containerPort: 8080        - name: probe          containerPort: 8086        env:        - name: VERSION          value: v2.0.0        livenessProbe:          httpGet:            path: /live            port: probe          initialDelaySeconds: 5          periodSeconds: 5        readinessProbe:          httpGet:            path: /ready            port: probe          periodSeconds: 5</code></pre><p>执行如下命令，部署 Deployement V2 应用。</p><pre><code class="shell">kubectl apply -f app-v2.yaml</code></pre><h2 id="按照权重策略灰度到-Deployment-V2-应用"><a href="#按照权重策略灰度到-Deployment-V2-应用" class="headerlink" title="按照权重策略灰度到 Deployment V2 应用"></a>按照权重策略灰度到 Deployment V2 应用</h2><p>本步骤指导你如何按照权重策略灰度到 Deployment V2 应用。</p><p>执行如下命令，创建名为 ingress-v2-canary-weigth.yaml 的 YAML 文件。将如下代码复制到文件中，并将 hots 参数中的<code>集群id</code>修改为<code>k8s 集群id</code>。</p><pre><code class="yaml">apiVersion: networking.k8s.io/v1kind: Ingressmetadata:  name: my-app-canary  labels:    app: my-app  annotations:    # Enable canary and send 10% of traffic to version 2    nginx.ingress.kubernetes.io/canary: &quot;true&quot;    nginx.ingress.kubernetes.io/canary-weight: &quot;10&quot;spec:  rules:  - host: my-app.集群id.cn-shanghai.alicontainer.com    http:      paths:      - backend:          service:            name: my-app-v2            port:              number: 80        path: /        pathType: Prefix</code></pre><p>执行如下命令，部署 Ingress 资源。</p><pre><code class="shell">kubectl apply -f ingress-v2-canary-weigth.yaml</code></pre><p>执行如下命令进行测试。</p><pre><code class="shell">while sleep 0.1;do curl my-app.&lt;集群id&gt;.cn-shanghai.alicontainer.com; done</code></pre><p>返回结果如下，有 10% 返回版本为 <code>v2.0.0</code>，表示已成功按照权重策略灰度到 Deployment V2 应用。按 CTRL+C 键退出。</p><pre><code class="text">Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v2-648947bdcb-2z4s5, Version: v2.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0Host: my-app-v2-648947bdcb-2z4s5, Version: v2.0.0Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0</code></pre><h2 id="按照-Header-策略灰度到-Deployment-V2-应用"><a href="#按照-Header-策略灰度到-Deployment-V2-应用" class="headerlink" title="按照 Header 策略灰度到 Deployment V2 应用"></a>按照 Header 策略灰度到 Deployment V2 应用</h2><p>本步骤指导你如何按照 Header 策略灰度到 Deployment V2 应用。</p><p>执行如下命令，创建名为 ingress-v2-canary-header.yaml 的 YAML 文件。将如下代码复制到文件中，并将 hots 参数中的集群id 修改为 k8s 集群id。</p><pre><code class="yaml">apiVersion: networking.k8s.io/v1kind: Ingressmetadata:  name: my-app-canary  labels:    app: my-app  annotations:    # Enable canary and send traffic with headder x-app-canary to version 2    nginx.ingress.kubernetes.io/canary: &quot;true&quot;    nginx.ingress.kubernetes.io/canary-by-header: &quot;x-app-canary&quot;    nginx.ingress.kubernetes.io/canary-by-header-value: &quot;true&quot;spec:  rules:  - host: my-app.集群id.cn-shanghai.alicontainer.com    http:      paths:      - backend:          service:            name: my-app-v2            port:              number: 80        path: /        pathType: Prefix</code></pre><p>执行如下命令，部署 Ingress 资源。</p><pre><code class="shell">kubectl apply -f ingress-v2-canary-header.yaml</code></pre><p>执行如下命令，并将命令中的集群id 修改为 k8s 集群id，进行测试。</p><pre><code class="shell">curl my-app.&lt;集群id&gt;.cn-shanghai.alicontainer.com</code></pre><p>返回结果如下，访问到 Deployment V1 应用。</p><pre><code class="text">Host: my-app-v1-6fc68db67d-xd2kf, Version: v1.0.0</code></pre><p>执行如下命令，并将命令中的集群id 修改为 k8s 集群id，设置新的 header。</p><pre><code class="shell">curl my-app.&lt;集群id&gt;.cn-shanghai.alicontainer.com -H &quot;x-app-canary: true&quot;</code></pre><p>返回结果如下，访问到 Deployment V2 应用，表示已成功按照 Header 策略灰度到 Deployment V2 应用。</p><pre><code class="text">Host: my-app-v2-648947bdcb-2z4s5, Version: v2.0.0</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;k8s 通过 Ingress 通过设置 权重&amp;#x2F;请求头 进行灰度发布。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="https://xwls.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="k8s" scheme="https://xwls.github.io/tags/k8s/"/>
+    
+    <category term="Ingress" scheme="https://xwls.github.io/tags/Ingress/"/>
+    
+    <category term="灰度" scheme="https://xwls.github.io/tags/%E7%81%B0%E5%BA%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>k8s 存储类 nfs 网络存储</title>
+    <link href="https://xwls.github.io/2023/02/02/k8s-storgeclass-nfs/"/>
+    <id>https://xwls.github.io/2023/02/02/k8s-storgeclass-nfs/</id>
+    <published>2023-02-02T00:46:39.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>将 nfs 网络存储设置为 k8s 的默认存储类。</p><span id="more"></span><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><blockquote><p>使用 <a href="https://killercoda.com/playgrounds/scenario/kubernetes">https://killercoda.com/playgrounds/scenario/kubernetes</a> 的 k8s 作为测试环境</p></blockquote><p>k8s 集群包含以下两个节点</p><ul><li>controlplane，IP：172.30.1.2</li><li>node01：IP：172.30.2.2</li></ul><pre><code class="shell">kubectl get nodes -o wideNAME           STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIMEcontrolplane   Ready    control-plane   6d11h   v1.26.0   172.30.1.2    &lt;none&gt;        Ubuntu 20.04.5 LTS   5.4.0-131-generic   containerd://1.6.12node01         Ready    &lt;none&gt;          6d10h   v1.26.0   172.30.2.2    &lt;none&gt;        Ubuntu 20.04.5 LTS   5.4.0-131-generic   containerd://1.6.12</code></pre><p>操作系统为：Ubuntu 22.04</p><pre><code class="shell">lsb_release -aNo LSB modules are available.Distributor ID: UbuntuDescription:    Ubuntu 20.04.5 LTSRelease:        20.04Codename:       focal</code></pre><h2 id="搭建-nfs"><a href="#搭建-nfs" class="headerlink" title="搭建 nfs"></a>搭建 nfs</h2><h3 id="controlplane-节点操作"><a href="#controlplane-节点操作" class="headerlink" title="controlplane 节点操作"></a>controlplane 节点操作</h3><pre><code class="shell">apt install nfs-kernel-server -ymkdir -p /nfs/datachown nobody:nogroup /nfs/dataecho &quot;/nfs/data/ *(rw,sync,no_subtree_check)&quot; &gt; /etc/exportssystemctl restart nfs-kernel-server</code></pre><h3 id="node01-节点操作"><a href="#node01-节点操作" class="headerlink" title="node01 节点操作"></a>node01 节点操作</h3><pre><code class="shell">apt install nfs-common -yshowmount -e 172.30.1.2mkdir -p /nfs/datamount 172.30.1.2:/nfs/data /nfs/data</code></pre><h2 id="设置存储类"><a href="#设置存储类" class="headerlink" title="设置存储类"></a>设置存储类</h2><pre><code class="yaml">apiVersion: storage.k8s.io/v1kind: StorageClassmetadata:  name: nfs-storage  annotations:    storageclass.kubernetes.io/is-default-class: &quot;true&quot;provisioner: k8s-sigs.io/nfs-subdir-external-provisionerparameters:  archiveOnDelete: &quot;true&quot;  ## 删除 pv 的时候，pv 的内容是否要备份---apiVersion: apps/v1kind: Deploymentmetadata:  name: nfs-client-provisioner  labels:    app: nfs-client-provisioner  # replace with namespace where provisioner is deployed  namespace: defaultspec:  replicas: 1  strategy:    type: Recreate  selector:    matchLabels:      app: nfs-client-provisioner  template:    metadata:      labels:        app: nfs-client-provisioner    spec:      serviceAccountName: nfs-client-provisioner      containers:        - name: nfs-client-provisioner          image: registry.cn-hangzhou.aliyuncs.com/lfy_k8s_images/nfs-subdir-external-provisioner:v4.0.2          # resources:          #    limits:          #      cpu: 10m          #    requests:          #      cpu: 10m          volumeMounts:            - name: nfs-client-root              mountPath: /persistentvolumes          env:            - name: PROVISIONER_NAME              value: k8s-sigs.io/nfs-subdir-external-provisioner            - name: NFS_SERVER              value: 172.30.1.2 ## 指定自己 nfs 服务器地址            - name: NFS_PATH                value: /nfs/data  ## nfs 服务器共享的目录      volumes:        - name: nfs-client-root          nfs:            server: 172.30.1.2            path: /nfs/data---apiVersion: v1kind: ServiceAccountmetadata:  name: nfs-client-provisioner  # replace with namespace where provisioner is deployed  namespace: default---kind: ClusterRoleapiVersion: rbac.authorization.k8s.io/v1metadata:  name: nfs-client-provisioner-runnerrules:  - apiGroups: [&quot;&quot;]    resources: [&quot;nodes&quot;]    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]  - apiGroups: [&quot;&quot;]    resources: [&quot;persistentvolumes&quot;]    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;delete&quot;]  - apiGroups: [&quot;&quot;]    resources: [&quot;persistentvolumeclaims&quot;]    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;update&quot;]  - apiGroups: [&quot;storage.k8s.io&quot;]    resources: [&quot;storageclasses&quot;]    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]  - apiGroups: [&quot;&quot;]    resources: [&quot;events&quot;]    verbs: [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]---kind: ClusterRoleBindingapiVersion: rbac.authorization.k8s.io/v1metadata:  name: run-nfs-client-provisionersubjects:  - kind: ServiceAccount    name: nfs-client-provisioner    # replace with namespace where provisioner is deployed    namespace: defaultroleRef:  kind: ClusterRole  name: nfs-client-provisioner-runner  apiGroup: rbac.authorization.k8s.io---kind: RoleapiVersion: rbac.authorization.k8s.io/v1metadata:  name: leader-locking-nfs-client-provisioner  # replace with namespace where provisioner is deployed  namespace: defaultrules:  - apiGroups: [&quot;&quot;]    resources: [&quot;endpoints&quot;]    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]---kind: RoleBindingapiVersion: rbac.authorization.k8s.io/v1metadata:  name: leader-locking-nfs-client-provisioner  # replace with namespace where provisioner is deployed  namespace: defaultsubjects:  - kind: ServiceAccount    name: nfs-client-provisioner    # replace with namespace where provisioner is deployed    namespace: defaultroleRef:  kind: Role  name: leader-locking-nfs-client-provisioner  apiGroup: rbac.authorization.k8s.io</code></pre><h2 id="检查结果"><a href="#检查结果" class="headerlink" title="检查结果"></a>检查结果</h2><pre><code class="shell">kubectl get scNAME                    PROVISIONER                                   RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGEnfs-storage (default)   k8s-sigs.io/nfs-subdir-external-provisioner   Delete          Immediate           false                  2s</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;将 nfs 网络存储设置为 k8s 的默认存储类。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="https://xwls.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="k8s" scheme="https://xwls.github.io/tags/k8s/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>git 统计代码量</title>
+    <link href="https://xwls.github.io/2023/01/05/git-statistics/"/>
+    <id>https://xwls.github.io/2023/01/05/git-statistics/</id>
+    <published>2023-01-05T02:52:52.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>根据 git 提交记录统计制定提交人指定时间范围的代码量。</p><span id="more"></span><h2 id="指定提交人的代码量"><a href="#指定提交人的代码量" class="headerlink" title="指定提交人的代码量"></a>指定提交人的代码量</h2><pre><code class="bash">git log --author=&quot;Kevin Wan&quot; --pretty=tformat: --numstat | awk &#39;&#123; add += $1; subs += $2; loc += $1 - $2 &#125; END &#123; printf &quot;added lines: %s, removed lines: %s, total lines: %s\n&quot;, add, subs, loc &#125;&#39; -</code></pre><ul><li>执行结果</li></ul><pre><code class="text">added lines: 42392, removed lines: 28107, total lines: 14285</code></pre><h2 id="所有提交人的代码量"><a href="#所有提交人的代码量" class="headerlink" title="所有提交人的代码量"></a>所有提交人的代码量</h2><pre><code class="bash">git log  --format=&#39;%aN&#39; | sort -u | while read name; do echo -en &quot;$name\t&quot;; git log --author=&quot;$name&quot; --pretty=tformat: --numstat | awk &#39;&#123; add += $1; subs += $2; loc += $1 - $2 &#125; END &#123; printf &quot;added lines: %s, removed lines: %s, total lines: %s\n&quot;, add, subs, loc &#125;&#39; -; done</code></pre><ul><li>执行结果</li></ul><pre><code class="text">ALMAS added lines: 1, removed lines: 1, total lines: 0Allen Liu added lines: 2, removed lines: 2, total lines: 0Amor added lines: 80, removed lines: 1, total lines: 79Archer added lines: 50, removed lines: 7, total lines: 43Atlan added lines: 4, removed lines: 2, total lines: 2BYT0723 added lines: 2, removed lines: 2, total lines: 0Bo-Yi Wu added lines: 437, removed lines: 461, total lines: -24</code></pre><h2 id="指定时间范围"><a href="#指定时间范围" class="headerlink" title="指定时间范围"></a>指定时间范围</h2><pre><code class="bash">git log --author=&quot;Kevin Wan&quot; --since=2022-12-01 --until=2022-12-31 --pretty=tformat: --numstat | awk &#39;&#123; add += $1; subs += $2; loc += $1 - $2 &#125; END &#123; printf &quot;added lines: %s, removed lines: %s, total lines: %s\n&quot;, add, subs, loc &#125;&#39; -</code></pre><ul><li>执行结果</li></ul><pre><code class="text">added lines: 1868, removed lines: 923, total lines: 945</code></pre><h2 id="提交者排名前-5"><a href="#提交者排名前-5" class="headerlink" title="提交者排名前 5"></a>提交者排名前 5</h2><pre><code class="bash">git log --pretty=&#39;%aN&#39; | sort | uniq -c | sort -k1 -n -r | head -n 5</code></pre><ul><li>执行结果</li></ul><pre><code class="text">737 Kevin Wan 356 kevin 112 anqiansong  71 kingxt  39 dependabot[bot]</code></pre><h2 id="git-log-参数说明"><a href="#git-log-参数说明" class="headerlink" title="git log 参数说明"></a>git log 参数说明</h2><pre><code class="text">--author   指定作者--stat   显示每次更新的文件修改统计信息，会列出具体文件列表--shortstat    统计每个 commit 的文件修改行数，包括增加，删除，但不列出文件列表：  --numstat   统计每个 commit 的文件修改行数，包括增加，删除，并列出文件列表：   -p 选项展开显示每次提交的内容差异，用-2 则仅显示最近的两次更新，例如：git log -p  -2--name-only 仅在提交信息后显示已修改的文件清单--name-status 显示新增、修改、删除的文件清单--abbrev-commit 仅显示 SHA-1 的前几个字符，而非所有的 40 个字符--relative-date 使用较短的相对时间显示（比如，“2 weeks ago”）--graph 显示 ASCII 图形表示的分支合并历史--pretty 使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）, 例如： git log --pretty=oneline ; git log --pretty=short ; git log --pretty=full ; git log --pretty=fuller--pretty=tformat:   可以定制要显示的记录格式，这样的输出便于后期编程提取分析       例如：git log --pretty=format:&quot;&quot;%h - %an, %ar : %s&quot;&quot;       下面列出了常用的格式占位符写法及其代表的意义。                          选项       说明                         %H      提交对象（commit）的完整哈希字串                      %h      提交对象的简短哈希字串                      %T      树对象（tree）的完整哈希字串                          %t      树对象的简短哈希字串                           %P      父对象（parent）的完整哈希字串                      %p      父对象的简短哈希字串                          %an     作者（author）的名字                     %ae     作者的电子邮件地址                       %ad     作者修订日期（可以用 -date= 选项定制格式）                          %ar     作者修订日期，按多久以前的方式显示                           %cn     提交者 (committer) 的名字                       %ce     提交者的电子邮件地址                           %cd     提交日期                       %cr     提交日期，按多久以前的方式显示                     %s      提交说明         --since  限制显示输出的范围，       例如： git log --since=2.weeks    显示最近两周的提交       选项 说明                       -(n)    仅显示最近的 n 条提交                           --since, --after 仅显示指定时间之后的提交。                           --until, --before 仅显示指定时间之前的提交。                         --author 仅显示指定作者相关的提交。                       --committer 仅显示指定提交者相关的提交。</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;根据 git 提交记录统计制定提交人指定时间范围的代码量。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="小技巧" scheme="https://xwls.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+    
+    
+    <category term="git" scheme="https://xwls.github.io/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MacOS 使用 minikube 搭建 Kubernetes 环境</title>
+    <link href="https://xwls.github.io/2022/10/19/macos-minikube-k8s/"/>
+    <id>https://xwls.github.io/2022/10/19/macos-minikube-k8s/</id>
+    <published>2022-10-19T08:14:16.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>MacOS 使用 minikube 搭建 Kubernetes 环境。</p><span id="more"></span><p>在 MacOS 下，使用 minikube 搭建 Kubernetes 环境，遇到了大量的问题，包括 [kubelet-check] Initial timeout of 40s passed.、拉取镜像失败、dashboard 启动失败，等等。</p><h2 id="安装-minikube"><a href="#安装-minikube" class="headerlink" title="安装 minikube"></a>安装 minikube</h2><ul><li>minikube 官网：<a href="https://minikube.sigs.k8s.io/docs/start/">https://minikube.sigs.k8s.io/docs/start/</a></li></ul><p>安装时最开始使用的是 brew 进行安装，brew 安装有个问题，会默认安装依赖项 kubernetes-cli，安装的版本比较新，会有奇奇怪怪的问题导致初始化时报错，后来删除 brew 安装的 minikube 和 kubernetes-cli，使用 binary 安装。</p><pre><code class="bash">curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64sudo install minikube-darwin-amd64 /usr/local/bin/minikube</code></pre><h2 id="启动-minikube"><a href="#启动-minikube" class="headerlink" title="启动 minikube"></a>启动 minikube</h2><ul><li>启动失败解决：<a href="https://www.jeeinn.com/2022/07/1715/">https://www.jeeinn.com/2022/07/1715/</a></li></ul><p>启动时可以使用<code>--image-mirror-country=&#39;cn&#39;</code>指定镜像为中国镜像，这样拉取镜像会快很多，顺便使用<code>--kubernetes-version=v1.23.8</code>指定版本。</p><pre><code class="bash">minikube start --image-mirror-country=&#39;cn&#39; --kubernetes-version=v1.23.8</code></pre><h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><pre><code class="bash">minikube kubectl -- get po -A</code></pre><h2 id="解决镜像拉取失败的问题"><a href="#解决镜像拉取失败的问题" class="headerlink" title="解决镜像拉取失败的问题"></a>解决镜像拉取失败的问题</h2><ul><li>解决方案：<a href="https://blog.csdn.net/w757227129/article/details/123512692">https://blog.csdn.net/w757227129/article/details/123512692</a></li></ul><p>使用<code>minikube ssh</code>进入 minikube 的 docker 节点</p><p>执行 touch &#x2F;etc&#x2F;docker&#x2F;daemon.json</p><p>将以下配置添加到 daemon.json 文件中</p><pre><code class="json">&#123;  &quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn/&quot;]&#125;</code></pre><p>然后重启 minikube</p><p>再次运行 kubectl create 创建资源的时候，镜像会被成功拉取</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;MacOS 使用 minikube 搭建 Kubernetes 环境。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="https://xwls.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="docker" scheme="https://xwls.github.io/tags/docker/"/>
+    
+    <category term="k8s" scheme="https://xwls.github.io/tags/k8s/"/>
+    
+    <category term="mac" scheme="https://xwls.github.io/tags/mac/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 搭建 Redis 集群</title>
+    <link href="https://xwls.github.io/2022/10/18/docker-redis-cluster/"/>
+    <id>https://xwls.github.io/2022/10/18/docker-redis-cluster/</id>
+    <published>2022-10-18T08:15:27.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用 docker 创建 redis 集群。</p><span id="more"></span><h2 id="拉取-redis-镜像"><a href="#拉取-redis-镜像" class="headerlink" title="拉取 redis 镜像"></a>拉取 redis 镜像</h2><pre><code class="bash">docker pull redis</code></pre><h2 id="创建-redis-配置文件"><a href="#创建-redis-配置文件" class="headerlink" title="创建 redis 配置文件"></a>创建 redis 配置文件</h2><pre><code class="bash">for port in $(seq 6379 6384); do mkdir -p /home/redis/node-$&#123;port&#125;/conftouch /home/redis/node-$&#123;port&#125;/conf/redis.confcat  &lt;&lt; EOF &gt; /home/redis/node-$&#123;port&#125;/conf/redis.confport $&#123;port&#125;requirepass 1234bind 0.0.0.0protected-mode nodaemonize noappendonly yescluster-enabled yes cluster-config-file nodes.confcluster-node-timeout 5000cluster-announce-ip  服务器就填公网 ip，或者内部对应容器的 ipcluster-announce-port $&#123;port&#125;cluster-announce-bus-port 1$&#123;port&#125;EOFdone</code></pre><ul><li>效果</li></ul><pre><code class="bash">[root@iZuf6brvjzmnf06szlrk7oZ ~]# cd /home/redis/[root@iZuf6brvjzmnf06szlrk7oZ redis]# tree.├── node-6379│   └── conf│       └── redis.conf├── node-6380│   └── conf│       └── redis.conf├── node-6381│   └── conf│       └── redis.conf├── node-6382│   └── conf│       └── redis.conf├── node-6383│   └── conf│       └── redis.conf└── node-6384    └── conf        └── redis.conf12 directories, 6 files</code></pre><h2 id="启动-redis"><a href="#启动-redis" class="headerlink" title="启动 redis"></a>启动 redis</h2><pre><code class="bash">for port in $(seq 6379 6384); \do \   docker run -it -d -p $&#123;port&#125;:$&#123;port&#125; -p 1$&#123;port&#125;:1$&#123;port&#125; \  --privileged=true -v /home/redis/node-$&#123;port&#125;/conf/redis.conf:/usr/local/etc/redis/redis.conf \  --privileged=true -v /home/redis/node-$&#123;port&#125;/data:/data \  --restart always --name redis-$&#123;port&#125; --net myredis \  --sysctl net.core.somaxconn=1024 redis redis-server /usr/local/etc/redis/redis.confdone</code></pre><ul><li>效果</li></ul><pre><code class="bash">[root@iZuf6brvjzmnf06szlrk7oZ redis]# for port in $(seq 6379 6384); \&gt; do \&gt;    docker run -it -d -p $&#123;port&#125;:$&#123;port&#125; -p 1$&#123;port&#125;:1$&#123;port&#125; \&gt;   --privileged=true -v /home/redis/node-$&#123;port&#125;/conf/redis.conf:/usr/local/etc/redis/redis.conf \&gt;   --privileged=true -v /home/redis/node-$&#123;port&#125;/data:/data \&gt;   --restart always --name redis-$&#123;port&#125; --net myredis \&gt;   --sysctl net.core.somaxconn=1024 redis redis-server /usr/local/etc/redis/redis.conf&gt; donec456167625319a7177036b09d516ff0813a31d61dbb24273ce1d1ff041f3f6213fc3c14204e9c9b2e80211f13c68a8cc8e1ee65c26683078453ec2052f0b6b53b04bb20f74e5e418e5588f1cc67e5aaf1a66e210f86f7ee1b433c489b157da0b5a501f0f18a9891246aa70cfc0f770f6e311ad6888004cb46e59f24185f5999113d7a9dcdc44d74592b25c12ea8e5d204bbd25200231f8fe9a55e5eac7803326ad3e265183d8815e29d19d488bb357d6fb931949eda46dbfc95018b32e51cf85</code></pre><h2 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h2><pre><code class="bash"># 进入容器 bashdocker exec -it redis-6379 /bin/bash# 创建集群redis-cli  -a 1234 --cluster create 47.103.58.89:6379 47.103.58.89:6380 47.103.58.89:6381 47.103.58.89:6382 47.103.58.89:6383 47.103.58.89:6384 --cluster-replicas 1</code></pre><ul><li>效果</li></ul><pre><code class="bash">[root@iZuf6brvjzmnf06szlrk7oZ redis]# docker exec -it redis-6379 /bin/bashroot@c45616762531:/data# redis-cli  -a 1234 --cluster create 47.103.58.89:6379 47.103.58.89:6380 47.103.58.89:6381 47.103.58.89:6382 47.103.58.89:6383 47.103.58.89:6384 --cluster-replicas 1Warning: Using a password with &#39;-a&#39; or &#39;-u&#39; option on the command line interface may not be safe.&gt;&gt;&gt; Performing hash slots allocation on 6 nodes...Master[0] -&gt; Slots 0 - 5460Master[1] -&gt; Slots 5461 - 10922Master[2] -&gt; Slots 10923 - 16383Adding replica 47.103.58.89:6383 to 47.103.58.89:6379Adding replica 47.103.58.89:6384 to 47.103.58.89:6380Adding replica 47.103.58.89:6382 to 47.103.58.89:6381&gt;&gt;&gt; Trying to optimize slaves allocation for anti-affinity[WARNING] Some slaves are in the same host as their masterM: 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 47.103.58.89:6379   slots:[0-5460] (5461 slots) masterM: 8e833d82ff85892646552e4cfda9f5d024ce7dc9 47.103.58.89:6380   slots:[5461-10922] (5462 slots) masterM: 535cd50270c353ca0e9196e09203d846788cf67a 47.103.58.89:6381   slots:[10923-16383] (5461 slots) masterS: af331e16ecd61119e6b627fbd27590f3ffaae26a 47.103.58.89:6382   replicates 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32dS: 34067385c2b8152575b83428d0cdcb50e1b837d5 47.103.58.89:6383   replicates 8e833d82ff85892646552e4cfda9f5d024ce7dc9S: fdca52748b918280deaa05bce48a214f4a365041 47.103.58.89:6384   replicates 535cd50270c353ca0e9196e09203d846788cf67aCan I set the above configuration? (type &#39;yes&#39; to accept): yes&gt;&gt;&gt; Nodes configuration updated&gt;&gt;&gt; Assign a different config epoch to each node&gt;&gt;&gt; Sending CLUSTER MEET messages to join the clusterWaiting for the cluster to join..&gt;&gt;&gt; Performing Cluster Check (using node 47.103.58.89:6379)M: 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 47.103.58.89:6379   slots:[0-5460] (5461 slots) master   1 additional replica(s)S: af331e16ecd61119e6b627fbd27590f3ffaae26a 47.103.58.89:6382   slots: (0 slots) slave   replicates 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32dS: fdca52748b918280deaa05bce48a214f4a365041 47.103.58.89:6384   slots: (0 slots) slave   replicates 535cd50270c353ca0e9196e09203d846788cf67aS: 34067385c2b8152575b83428d0cdcb50e1b837d5 47.103.58.89:6383   slots: (0 slots) slave   replicates 8e833d82ff85892646552e4cfda9f5d024ce7dc9M: 535cd50270c353ca0e9196e09203d846788cf67a 47.103.58.89:6381   slots:[10923-16383] (5461 slots) master   1 additional replica(s)M: 8e833d82ff85892646552e4cfda9f5d024ce7dc9 47.103.58.89:6380   slots:[5461-10922] (5462 slots) master   1 additional replica(s)[OK] All nodes agree about slots configuration.&gt;&gt;&gt; Check for open slots...&gt;&gt;&gt; Check slots coverage...[OK] All 16384 slots covered.</code></pre><h2 id="查看集群信息"><a href="#查看集群信息" class="headerlink" title="查看集群信息"></a>查看集群信息</h2><pre><code class="bash"># 连接 redisredis-cli -c -a 1234# 查看集群信息CLUSTER INFO# 查看节点信息CLUSTER NODES</code></pre><ul><li>效果</li></ul><pre><code class="bash">127.0.0.1:6379&gt; CLUSTER INFOcluster_state:okcluster_slots_assigned:16384cluster_slots_ok:16384cluster_slots_pfail:0cluster_slots_fail:0cluster_known_nodes:6cluster_size:3cluster_current_epoch:6cluster_my_epoch:1cluster_stats_messages_ping_sent:81cluster_stats_messages_pong_sent:90cluster_stats_messages_sent:171cluster_stats_messages_ping_received:85cluster_stats_messages_pong_received:79cluster_stats_messages_meet_received:5cluster_stats_messages_received:169total_cluster_links_buffer_limit_exceeded:0127.0.0.1:6379&gt; CLUSTER NODESaf331e16ecd61119e6b627fbd27590f3ffaae26a 47.103.58.89:6382@16382 slave 3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 0 1666080700700 1 connected3d1df32edcb46e9d2f0e9c6b4b0c68baf99ca32d 47.103.58.89:6379@16379 myself,master - 0 1666080699000 1 connected 0-5460fdca52748b918280deaa05bce48a214f4a365041 47.103.58.89:6384@16384 slave 535cd50270c353ca0e9196e09203d846788cf67a 0 1666080700000 3 connected34067385c2b8152575b83428d0cdcb50e1b837d5 47.103.58.89:6383@16383 slave 8e833d82ff85892646552e4cfda9f5d024ce7dc9 0 1666080700820 2 connected535cd50270c353ca0e9196e09203d846788cf67a 47.103.58.89:6381@16381 master - 0 1666080700644 3 connected 10923-163838e833d82ff85892646552e4cfda9f5d024ce7dc9 47.103.58.89:6380@16380 master - 0 1666080699697 2 connected 5461-10922</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;使用 docker 创建 redis 集群。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="环境搭建" scheme="https://xwls.github.io/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+    
+    
+    <category term="docker" scheme="https://xwls.github.io/tags/docker/"/>
+    
+    <category term="redis" scheme="https://xwls.github.io/tags/redis/"/>
+    
+    <category term="集群" scheme="https://xwls.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MyBatis 调用数据库存储过程</title>
+    <link href="https://xwls.github.io/2022/10/17/mybatis-call-procedure/"/>
+    <id>https://xwls.github.io/2022/10/17/mybatis-call-procedure/</id>
+    <published>2022-10-17T06:19:13.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用 MyBatis 调用数据库的存储过程。</p><span id="more"></span><p>项目中有个需求：调用数据库中已有的存储过程实现用户登录业务，此存储过程接收 3 个参数，两个入参：username&#x2F;password，一个出参：result，登录成功 result 为 1，失败为 0。</p><h2 id="创建存储过程"><a href="#创建存储过程" class="headerlink" title="创建存储过程"></a>创建存储过程</h2><p>这里简单创建一个存储过程，模拟登录，当用户名不为空且密码为 123456，则认为登录成功，否则认为登录失败。</p><pre><code class="sql">create or replace procedure login_wzw(username in varchar2,password in varchar2, result out int)asbegin    if username is null or username = &#39;&#39; then        select 0 into result from dual;        return ;    end if;    if password = &#39;123456&#39; then        select 1 into result from dual;    else        select 0 into result from dual;    end if;end;</code></pre><h2 id="测试存储过程"><a href="#测试存储过程" class="headerlink" title="测试存储过程"></a>测试存储过程</h2><ul><li>测试用户名为空，输出：result&#x3D;0</li></ul><pre><code class="sql">declare    username varchar2(100);    password varchar2(100);    result int;begin    username := &#39;&#39;;    password := &#39;123456&#39;;    login_wzw(username, password, result);    dbms_output.put_line(&#39;result=&#39;||result);end;</code></pre><ul><li>测试密码错误，输出：result&#x3D;0</li></ul><pre><code class="sql">declare    username varchar2(100);    password varchar2(100);    result int;begin    username := &#39;zhangsan&#39;;    password := &#39;1234567&#39;;    login_wzw(username, password, result);    dbms_output.put_line(&#39;result=&#39;||result);end;</code></pre><ul><li>测试密码正确，输出：result&#x3D;1</li></ul><pre><code class="sql">declare    username varchar2(100);    password varchar2(100);    result int;begin    username := &#39;zhangsan&#39;;    password := &#39;123456&#39;;    login_wzw(username, password, result);    dbms_output.put_line(&#39;result=&#39;||result);end;</code></pre><h2 id="MyBatis-调用"><a href="#MyBatis-调用" class="headerlink" title="MyBatis 调用"></a>MyBatis 调用</h2><p>使用 MyBatis 调用存储过程。</p><h3 id="参数为实体类"><a href="#参数为实体类" class="headerlink" title="参数为实体类"></a>参数为实体类</h3><ul><li>UserLogin.java</li></ul><pre><code class="java">public class UserLogin &#123;    private String username;    private String password;    private Integer result;    //省略 setter/getter&#125;</code></pre><ul><li>Mapper.java</li></ul><pre><code class="java">void loginWzw(UserLogin userLogin);</code></pre><ul><li>Mapper.xml</li></ul><pre><code class="xml">&lt;select id=&quot;loginWzw&quot; statementType=&quot;CALLABLE&quot; useCache=&quot;false&quot;&gt;  &#123;call LOGIN_WZW(      #&#123;username,jdbcType=VARCHAR,mode=IN&#125;,      #&#123;password,jdbcType=VARCHAR,mode=IN&#125;,      #&#123;result,jdbcType=INTEGER,mode=OUT&#125;    )&#125;&lt;/select&gt;</code></pre><ul><li>执行结果：</li></ul><pre><code class="text">ProcedureLoginVo&#123;username=&#39;admin&#39;, password=&#39;123456&#39;, result=null&#125;13:54:37.307 [main] DEBUG c.r.p.s.m.S.loginWzw - [debug,137] - ==&gt;  Preparing: &#123;call LOGIN_WZW( ?, ?, ? )&#125;13:54:37.318 [main] DEBUG c.r.p.s.m.S.loginWzw - [debug,137] - ==&gt; Parameters: admin(String), 123456(String)ProcedureLoginVo&#123;username=&#39;admin&#39;, password=&#39;123456&#39;, result=1&#125;</code></pre><h3 id="参数为-Map"><a href="#参数为-Map" class="headerlink" title="参数为 Map"></a>参数为 Map</h3><ul><li>Mapper.java</li></ul><pre><code class="java">void loginWzw2(Map&lt;String,Object&gt; param);</code></pre><ul><li>Mapper.xml</li></ul><pre><code class="xml">&lt;select id=&quot;loginWzw2&quot; statementType=&quot;CALLABLE&quot; parameterType=&quot;map&quot; useCache=&quot;false&quot;&gt;  &#123;call LOGIN_WZW(      #&#123;username,jdbcType=VARCHAR,mode=IN&#125;,      #&#123;password,jdbcType=VARCHAR,mode=IN&#125;,      #&#123;result,jdbcType=INTEGER,mode=OUT&#125;    )&#125;&lt;/select&gt;</code></pre><ul><li>执行结果</li></ul><pre><code class="text">&#123;password=1234567, username=admin&#125;13:54:37.335 [main] DEBUG c.r.p.s.m.S.loginWzw2 - [debug,137] - ==&gt;  Preparing: &#123;call LOGIN_WZW( ?, ?, ? )&#125;13:54:37.335 [main] DEBUG c.r.p.s.m.S.loginWzw2 - [debug,137] - ==&gt; Parameters: admin(String), 1234567(String)&#123;result=0, password=1234567, username=admin&#125;</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;使用 MyBatis 调用数据库的存储过程。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Java" scheme="https://xwls.github.io/categories/Java/"/>
+    
+    
+    <category term="java" scheme="https://xwls.github.io/tags/java/"/>
+    
+    <category term="数据库" scheme="https://xwls.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    <category term="存储过程" scheme="https://xwls.github.io/tags/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B/"/>
+    
+    <category term="mybatis" scheme="https://xwls.github.io/tags/mybatis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ArrayList 扩容规则</title>
+    <link href="https://xwls.github.io/2022/10/15/array-list-incr-capacity/"/>
+    <id>https://xwls.github.io/2022/10/15/array-list-incr-capacity/</id>
+    <published>2022-10-15T07:28:59.000Z</published>
+    <updated>2023-08-18T03:56:18.114Z</updated>
+    
+    <content type="html"><![CDATA[<p>Java 中的常用集合类 ArrayList 的扩容规则。</p><span id="more"></span><h2 id="验证程序"><a href="#验证程序" class="headerlink" title="验证程序"></a>验证程序</h2><pre><code class="java">import java.lang.reflect.Field;import java.util.ArrayList;class Scratch &#123;    public static void main(String[] args) &#123;        ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();        for (int i = 0; i &lt; 100; i++) &#123;            printInfo(list);            list.add(String.valueOf(i));        &#125;    &#125;    /**     * 打印 ArrayList 的大小和容量     */    private static void printInfo(ArrayList&lt;?&gt; list) &#123;        Class&lt;?&gt; aClass = list.getClass();        Field elementData = null;        try &#123;            // 获取 ArrayList 中用来存储元素的数组            elementData = aClass.getDeclaredField(&quot;elementData&quot;);        &#125; catch (NoSuchFieldException e) &#123;            throw new RuntimeException(e);        &#125;        elementData.setAccessible(true);        Object[] o;        try &#123;            o = (Object[]) elementData.get(list);        &#125; catch (IllegalAccessException e) &#123;            throw new RuntimeException(e);        &#125;        // 输出当前大小和容量        System.out.println(&quot;size = &quot; + list.size() + &quot;, capacity = &quot; + o.length);    &#125;&#125;</code></pre><h2 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h2><pre><code class="text">size = 0, capacity = 0size = 1, capacity = 10size = 2, capacity = 10size = 3, capacity = 10size = 4, capacity = 10size = 5, capacity = 10size = 6, capacity = 10size = 7, capacity = 10size = 8, capacity = 10size = 9, capacity = 10size = 10, capacity = 10size = 11, capacity = 15size = 12, capacity = 15size = 13, capacity = 15size = 14, capacity = 15size = 15, capacity = 15size = 16, capacity = 22size = 17, capacity = 22size = 18, capacity = 22size = 19, capacity = 22size = 20, capacity = 22size = 21, capacity = 22size = 22, capacity = 22size = 23, capacity = 33size = 24, capacity = 33size = 25, capacity = 33size = 26, capacity = 33size = 27, capacity = 33size = 28, capacity = 33size = 29, capacity = 33size = 30, capacity = 33size = 31, capacity = 33size = 32, capacity = 33size = 33, capacity = 33size = 34, capacity = 49size = 35, capacity = 49size = 36, capacity = 49size = 37, capacity = 49size = 38, capacity = 49size = 39, capacity = 49size = 40, capacity = 49size = 41, capacity = 49size = 42, capacity = 49size = 43, capacity = 49size = 44, capacity = 49size = 45, capacity = 49size = 46, capacity = 49size = 47, capacity = 49size = 48, capacity = 49size = 49, capacity = 49size = 50, capacity = 73size = 51, capacity = 73size = 52, capacity = 73size = 53, capacity = 73size = 54, capacity = 73size = 55, capacity = 73size = 56, capacity = 73size = 57, capacity = 73size = 58, capacity = 73size = 59, capacity = 73size = 60, capacity = 73size = 61, capacity = 73size = 62, capacity = 73size = 63, capacity = 73size = 64, capacity = 73size = 65, capacity = 73size = 66, capacity = 73size = 67, capacity = 73size = 68, capacity = 73size = 69, capacity = 73size = 70, capacity = 73size = 71, capacity = 73size = 72, capacity = 73size = 73, capacity = 73size = 74, capacity = 109size = 75, capacity = 109size = 76, capacity = 109size = 77, capacity = 109size = 78, capacity = 109size = 79, capacity = 109size = 80, capacity = 109size = 81, capacity = 109size = 82, capacity = 109size = 83, capacity = 109size = 84, capacity = 109size = 85, capacity = 109size = 86, capacity = 109size = 87, capacity = 109size = 88, capacity = 109size = 89, capacity = 109size = 90, capacity = 109size = 91, capacity = 109size = 92, capacity = 109size = 93, capacity = 109size = 94, capacity = 109size = 95, capacity = 109size = 96, capacity = 109size = 97, capacity = 109size = 98, capacity = 109size = 99, capacity = 109</code></pre><h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><ul><li>刚创建未添加任何元素时，容量是 0。</li><li>当添加第一个元素时，容量为默认容量 10。</li><li>需要扩容时，容量会变为原先的 1.5 倍。</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Java 中的常用集合类 ArrayList 的扩容规则。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Java" scheme="https://xwls.github.io/categories/Java/"/>
+    
+    
+    <category term="源码" scheme="https://xwls.github.io/tags/%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="算法" scheme="https://xwls.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MacOS 安装 Hadoop 3.3.4</title>
+    <link href="https://xwls.github.io/2022/10/15/macos-install-hadoop-334/"/>
+    <id>https://xwls.github.io/2022/10/15/macos-install-hadoop-334/</id>
+    <published>2022-10-15T06:17:04.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>MacOS 12.6 安装 Hadoop 3.3.4 单机版</p><span id="more"></span><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><ul><li>Hadoop 官网：<a href="https://hadoop.apache.org/">https://hadoop.apache.org</a></li><li>下载：<a href="https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/">https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/</a></li></ul><p><img src="https://xwls-oss.netlify.app/images/202210151420368.webp" alt="202210151420368"></p><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ul><li>创建目录用来存放Hadoop</li></ul><pre><code class="bash">mkdir -p /Users/wangzengwei/Tools/hadoop-3.3.4</code></pre><ul><li>解压缩下载好的Hadoop文件</li></ul><pre><code class="bash">cd /Users/wangzengwei/Tools/hadoop-3.3.4tar -zxvf hadoop-3.3.4.tar.gz</code></pre><ul><li>配置 hadoop-env.sh</li></ul><pre><code class="text">export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_341.jdk/Contents/Homeexport HADOOP_CONF_DIR=/Users/wangzengwei/Tools/hadoop-3.3.4/etc/hadoop</code></pre><ul><li>配置 core-site.xml</li></ul><pre><code class="xml">&lt;configuration&gt;    &lt;property&gt;        &lt;name&gt;fs.defaultFS&lt;/name&gt;        &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;    &lt;/property&gt;    &lt;!--用来指定hadoop运行时产生文件的存放目录  自己创建--&gt;    &lt;property&gt;        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;    &lt;value&gt;file:/Users/wangzengwei/Tools/hadoop-3.3.4/tmp&lt;/value&gt;    &lt;/property&gt;    &lt;property&gt;        &lt;name&gt;fs.trash.interval&lt;/name&gt;        &lt;value&gt;1440&lt;/value&gt;    &lt;/property&gt;&lt;/configuration&gt;</code></pre><ul><li>配置 hdfs-site.xml</li></ul><pre><code class="xml">&lt;configuration&gt;    &lt;property&gt;        &lt;name&gt;dfs.replication&lt;/name&gt;        &lt;value&gt;1&lt;/value&gt;    &lt;/property&gt;    &lt;!--不是root用户也可以写文件到hdfs--&gt;    &lt;property&gt;        &lt;name&gt;dfs.permissions&lt;/name&gt;        &lt;value&gt;false&lt;/value&gt;    &lt;!--关闭防火墙--&gt;    &lt;/property&gt;    &lt;!--把路径换成本地的name坐在位置--&gt;    &lt;property&gt;        &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;        &lt;value&gt;/Users/wangzengwei/Tools/hadoop-3.3.4/namenodedir&lt;/value&gt;    &lt;/property&gt;    &lt;!--在本地新建一个存放hadoop数据的文件夹，然后将路径在这里配置一下--&gt;    &lt;property&gt;        &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;        &lt;value&gt;/Users/wangzengwei/Tools/hadoop-3.3.4/datanodedir&lt;/value&gt;    &lt;/property&gt;&lt;/configuration&gt;</code></pre><ul><li>配置 mapred-site.xml</li></ul><pre><code class="xml">&lt;configuration&gt;    &lt;property&gt;        &lt;!--指定mapreduce运行在yarn上--&gt;        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;        &lt;value&gt;yarn&lt;/value&gt;    &lt;/property&gt;&lt;/configuration&gt;</code></pre><ul><li>配置 yarn-site.xml</li></ul><pre><code class="xml">&lt;configuration&gt;    &lt;!-- Site specific YARN configuration properties --&gt;    &lt;property&gt;        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;    &lt;/property&gt;    &lt;property&gt;        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;        &lt;value&gt;localhost:18040&lt;/value&gt;    &lt;/property&gt;    &lt;property&gt;        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;        &lt;value&gt;localhost:18030&lt;/value&gt;    &lt;/property&gt;    &lt;property&gt;        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;        &lt;value&gt;localhost:18025&lt;/value&gt;    &lt;/property&gt;    &lt;property&gt;        &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;        &lt;value&gt;localhost:18141&lt;/value&gt;    &lt;/property&gt;    &lt;property&gt;        &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;        &lt;value&gt;localhost:18088&lt;/value&gt;    &lt;/property&gt;&lt;/configuration&gt;</code></pre><ul><li>Hadoop namenode 格式化</li></ul><pre><code class="bash">hdfs namenode -format</code></pre><ul><li>配置 ssh 免密登录</li></ul><pre><code class="bash">ssh-keygen -t rsacat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys# 验证ssh ssh localhost</code></pre><h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><pre><code class="bash">cd /Users/wangzengwei/Tools/hadoop-3.3.4/sbin./start-all.sh</code></pre><h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>终端执行 jps 命令，在打印结果中会看到 5 个进程，分别是 namenode、 secondarynamenode、datanode、resourcemanager、nodemanager，说明启动成功</p><ul><li>浏览器访问：<a href="http://localhost:18088/">http://localhost:18088</a>，查看Hadoop集群信息</li></ul><p><img src="https://xwls-oss.netlify.app/images/202210151435969.webp" alt="202210151435969"></p><ul><li>浏览器访问：<a href="http://localhost:9870/">http://localhost:9870</a>，查看HDFS信息</li></ul><p><img src="https://xwls-oss.netlify.app/images/202210151436113.webp" alt="202210151436113"></p><h2 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h2><pre><code class="bash">cd /Users/wangzengwei/Tools/hadoop-3.3.4/sbin./stop-all.sh</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;MacOS 12.6 安装 Hadoop 3.3.4 单机版&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="大数据" scheme="https://xwls.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+    <category term="环境搭建" scheme="https://xwls.github.io/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+    
+    <category term="大数据" scheme="https://xwls.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="Hadoop" scheme="https://xwls.github.io/tags/Hadoop/"/>
+    
+    <category term="Mac" scheme="https://xwls.github.io/tags/Mac/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CentOS8 安装 Docker CE</title>
+    <link href="https://xwls.github.io/2022/10/15/centos8-install-docker-ce/"/>
+    <id>https://xwls.github.io/2022/10/15/centos8-install-docker-ce/</id>
+    <published>2022-10-15T01:56:28.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>本步骤指导您如何在 ECS 实例上部署 Docker</p><span id="more"></span><ol><li><p>执行如下命令，安装 dnf。dnf 是新一代的 rpm 软件包管理器。</p><pre><code class="bash">yum -y install dnf</code></pre></li><li><p>执行如下命令，安装 Docker 存储驱动的依赖包。</p><pre><code class="bash">dnf install -y device-mapper-persistent-data lvm2</code></pre></li><li><p>执行如下命令，添加稳定的 Docker 软件源。</p><pre><code class="bash">yum makecache fastyum -y install docker-ce</code></pre></li><li><p>执行如下命令，查看已添加的 Docker 软件源。</p><pre><code class="bash">dnf list docker-ce</code></pre><p> <img src="https://xwls-oss.netlify.app/images/202210151002228.webp" alt="202210151002228"></p></li><li><p>执行如下命令，安装 docker-ce。</p><pre><code class="bash">dnf install -y docker-ce --nobest</code></pre></li><li><p>执行如下命令，启动 Docker 服务。</p><pre><code class="bash">systemctl start docker</code></pre></li><li><p>执行如下命令，查看 Docker 服务的运行状态。</p><pre><code class="bash">systemctl status docker</code></pre><p> 返回结果如下，表示 Docker 服务处于运行中的状态。按 q 键退出查看 Docker 服务的运行状态。</p><p> <img src="https://xwls-oss.netlify.app/images/202210151005814.webp" alt="202210151005814"></p></li><li><p>执行如下命令，查看 Docker 的版本。</p><pre><code class="bash">docker -v</code></pre><p> 返回结果如下，您可查看到 Docker 的版本。</p><p> <img src="https://xwls-oss.netlify.app/images/202210151008931.webp" alt="202210151008931"></p></li></ol>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;本步骤指导您如何在 ECS 实例上部署 Docker&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="https://xwls.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="运维" scheme="https://xwls.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    
+    <category term="centos" scheme="https://xwls.github.io/tags/centos/"/>
+    
+    <category term="linux" scheme="https://xwls.github.io/tags/linux/"/>
+    
+    <category term="docker" scheme="https://xwls.github.io/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git 全局忽略 .DS_Store 文件</title>
+    <link href="https://xwls.github.io/2022/08/29/git-global-ingore/"/>
+    <id>https://xwls.github.io/2022/08/29/git-global-ingore/</id>
+    <published>2022-08-29T08:29:36.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>Git 全局忽略指定文件，以 MacOS 的 .DS_Store 文件为例</p><span id="more"></span><h2 id="DS-Store-文件"><a href="#DS-Store-文件" class="headerlink" title=".DS_Store 文件"></a>.DS_Store 文件</h2><p>DS_Store，英文全称是 Desktop Services Store（桌面服务存储），开头的 DS 是 Desktop Services（桌面服务） 的缩写。它是一种由 macOS 系统自动创建的隐藏文件，存在于每一个用「访达」打开过的文件夹下面。</p><p>虽然不能在「访达」中直接看到它，但是通过「终端」App，可以输入<code>ls -la</code>命令列出。同时，通过<code>file</code>命令，可以显示出其文件类型，即”Desktop Services Store“。</p><p>DS_Store 文件的主要作用，是存储当前文件夹在桌面显示相关方面的一些自定义属性，包括文件图标的位置、文件夹上次打开时窗口的大小、展现形式和位置等。这有助于保留为特定文件夹配置的设置，例如，将桌面文件夹设置为查看按名称排序的图标，同时将下载文件夹配置为将文件显示为列表并按日期排序，最近修改的先显示。</p><h2 id="Git-忽略-DS-Store-文件"><a href="#Git-忽略-DS-Store-文件" class="headerlink" title="Git 忽略 .DS_Store 文件"></a>Git 忽略 .DS_Store 文件</h2><p>作为一名使用 Mac 的开发者，在日常开发过程中，经常会使用 Git 来对代码文件夹进行版本控制。而在默认情况下，Git 会把 .DS_Store 文件带入版本控制的范围内。所以，可以手动将其踏入 Git 的版本管理忽略列表。</p><ul><li>将 <code>.DS_Store</code> 加入全局的 <code>.gitignore</code> 文件，执行命令：</li></ul><pre><code class="bash">echo .DS_Store &gt;&gt; ~/.gitignore_global</code></pre><ul><li>将这个全局的 <code>.gitignore</code> 文件加入 Git 的全局 <code>config</code> 文件中，执行命令：</li></ul><pre><code class="bash">git config --global core.excludesfile ~/.gitignore_global</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Git 全局忽略指定文件，以 MacOS 的 .DS_Store 文件为例&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="小技巧" scheme="https://xwls.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+    
+    
+    <category term="git" scheme="https://xwls.github.io/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ORA-01502: 索引 &#39;xxx&#39; 或这类索引的分区处于不可用状态</title>
+    <link href="https://xwls.github.io/2022/08/25/ora-01502-index-unavailable/"/>
+    <id>https://xwls.github.io/2022/08/25/ora-01502-index-unavailable/</id>
+    <published>2022-08-25T08:13:07.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>ORA-01502: 索引 ‘xxx’ 或这类索引的分区处于不可用状态，移动表空间后，导致索引失效，处于不可用状态。</p><span id="more"></span><pre><code class="text">### The error occurred while setting parameters### SQL: insert into USER_LBL_INF( LBL_ID,LBL_NM,USERID,CRT_TM)       values(       ?,       ? ,       ? ,       ?       )### Cause: java.sql.SQLException: ORA-01502: 索引 &#39;BASE_PD.PK_USER_LBL_INF&#39; 或这类索引的分区处于不可用状态 ; uncategorized SQLException; SQL state [72000]; error code [1502]; ORA-01502: 索引 &#39;BASE_PD.PK_USER_LBL_INF&#39; 或这类索引的分区处于不可用状态; nested exception is java.sql.SQLException: ORA-01502: 索引 &#39;BASE_PD.PK_USER_LBL_INF&#39; 或这类索引的分区处于不可用状态] with root cause java.sql.SQLException: ORA-01502: 索引 &#39;BASE_PD.PK_USER_LBL_INF&#39; 或这类索引的分区处于不可用状态</code></pre><h2 id="查询不可用的索引"><a href="#查询不可用的索引" class="headerlink" title="查询不可用的索引"></a>查询不可用的索引</h2><pre><code class="sql">SELECT INDEX_NAME, STATUS FROM DBA_INDEXES WHERE OWNER = &#39;RZGWL_WLLH&#39; AND STATUS != &#39;VALID&#39;;</code></pre><h2 id="重建索引"><a href="#重建索引" class="headerlink" title="重建索引"></a>重建索引</h2><pre><code class="sql">ALTER INDEX PK_BT_RY_SYS_USER_ROLE REBUILD;</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;ORA-01502: 索引 ‘xxx’ 或这类索引的分区处于不可用状态，移动表空间后，导致索引失效，处于不可用状态。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="https://xwls.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="oracle" scheme="https://xwls.github.io/tags/oracle/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>修改 Oracle 数据库的字符集</title>
+    <link href="https://xwls.github.io/2022/08/25/oracle-change-charset/"/>
+    <id>https://xwls.github.io/2022/08/25/oracle-change-charset/</id>
+    <published>2022-08-25T08:09:14.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>修改 Oracle 数据库的字符集，项目中遇到的问题，客户的 Oracle 字符集是 ZHS16GBK，我们是 UTF8，需要将 UTF8 修改为 ZHS16GBK。</p><span id="more"></span><p>库 A 的编码为 gbk，库 B 的编码为 utf-8，两种编码格式下，汉字占的字节数不一样，gbk 为 2 个字节，utf-8 为 3 个字节。所有针对某些情况，需要修改字符集编码。</p><p>修改 Oracle 数据库的字符集（UTF8→ZHS16GBK）步骤如下：</p><h2 id="1-登录"><a href="#1-登录" class="headerlink" title="1. 登录"></a>1. 登录</h2><p>以 sysdba 的身份登录上去</p><pre><code class="text">conn sys/root as sysdba</code></pre><h2 id="2-关闭数据库"><a href="#2-关闭数据库" class="headerlink" title="2. 关闭数据库"></a>2. 关闭数据库</h2><pre><code class="text">shutdown immediate;</code></pre><h2 id="3-以-mount-打来数据库"><a href="#3-以-mount-打来数据库" class="headerlink" title="3. 以 mount 打来数据库"></a>3. 以 mount 打来数据库</h2><pre><code class="text">startup mount;</code></pre><h2 id="4-设置-session"><a href="#4-设置-session" class="headerlink" title="4. 设置 session"></a>4. 设置 session</h2><pre><code class="sql">ALTER SYSTEM ENABLE RESTRICTED SESSION;ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;ALTER SYSTEM SET AQ_TM_PROCESSES=0;</code></pre><h2 id="5-启动数据库"><a href="#5-启动数据库" class="headerlink" title="5. 启动数据库"></a>5. 启动数据库</h2><pre><code class="sql">alter database open;</code></pre><h2 id="6-修改字符集"><a href="#6-修改字符集" class="headerlink" title="6. 修改字符集"></a>6. 修改字符集</h2><pre><code class="sql">ALTER DATABASE character set INTERNAL_USE ZHS16GBK;</code></pre><h2 id="7-关闭，重新启动"><a href="#7-关闭，重新启动" class="headerlink" title="7. 关闭，重新启动"></a>7. 关闭，重新启动</h2><pre><code class="sql">shutdown immediate;startup;</code></pre><h2 id="8-查看修改后的字符集"><a href="#8-查看修改后的字符集" class="headerlink" title="8. 查看修改后的字符集"></a>8. 查看修改后的字符集</h2><pre><code class="sql">SELECT * FROM V$NLS_PARAMETERS WHERE PARAMETER = &#39;NLS_CHARACTERSET&#39; ;select userenv(&#39;language&#39;) from dual;</code></pre><blockquote><p>当然字符集最好不要轻易修改，因为这会对数据库的数据有直接的影响，<br>如果是正式环境的话，可能会造成不可估计的损失。<br>修改完字符集后，数据库中已有的汉字将会出现乱码。请修改编码集前备份数据，修改完编码集后重新导入数据。</p></blockquote>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;修改 Oracle 数据库的字符集，项目中遇到的问题，客户的 Oracle 字符集是 ZHS16GBK，我们是 UTF8，需要将 UTF8 修改为 ZHS16GBK。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="https://xwls.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="oracle" scheme="https://xwls.github.io/tags/oracle/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Oracle 表空间</title>
+    <link href="https://xwls.github.io/2022/08/25/oracle-tablespace/"/>
+    <id>https://xwls.github.io/2022/08/25/oracle-tablespace/</id>
+    <published>2022-08-25T08:06:59.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>Oracle 数据库的表空间操作，包括：创建、修改、删除、查询</p><span id="more"></span><h2 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h2><pre><code class="sql">-- 表空间类型及名称，默认不指定类型（永久）create [temporary | undo] tablespace &quot;TBS&quot; -- 数据文件的位置及大小datafile &#39;D:\Oracle\TBS.dbf&#39; size 10m-- 是否自动扩展，默认 &#39;off&#39;[autoextend off] | [autoextend on next n maxsize m]  -- 是否产生日志，默认 &#39;loggin&#39;[loggin | nologgin]-- 段空间自动管理，默认 &#39;auto&#39; 推荐[segment space management auto]        -- 表空间管理方式，dictionary | local(默认，推荐)              [extent management local [uniform size n]]</code></pre><h3 id="例1：创建一个永久表空间-“TBS01”，其大小为-10MB"><a href="#例1：创建一个永久表空间-“TBS01”，其大小为-10MB" class="headerlink" title="例1：创建一个永久表空间 “TBS01”，其大小为 10MB"></a>例1：创建一个永久表空间 “TBS01”，其大小为 10MB</h3><pre><code class="sql">create tablespace &quot;TBS01&quot;datafile &#39;D:\Oracle\TBS01.dbf&#39; size 10m;</code></pre><p>1.路径必须存在，否则报错！<br>2.表空间名称默认大写，除非用引号注明，如 “tbs” 则为小写</p><h3 id="例2：创建一个自增表空间-“TBS02”，其大小为-10MB，每次扩展-1MB，最大扩展到-20MB"><a href="#例2：创建一个自增表空间-“TBS02”，其大小为-10MB，每次扩展-1MB，最大扩展到-20MB" class="headerlink" title="例2：创建一个自增表空间 “TBS02”，其大小为 10MB，每次扩展 1MB，最大扩展到 20MB"></a>例2：创建一个自增表空间 “TBS02”，其大小为 10MB，每次扩展 1MB，最大扩展到 20MB</h3><pre><code class="sql">create tablespace &quot;TBS02&quot;datafile &#39;D:\Oracle\TBS02.dbf&#39; size 10mautoextend on next 1m maxsize 20m;</code></pre><p>查询上述表空间的情况：1M &#x3D; 1024KB，1KB &#x3D; 1024 Byte</p><pre><code class="sql">select t.tablespace_name, -- 表空间       t.file_name, -- 文件名       t.autoextensible, -- 是否自增       t.bytes / 1024 / 1024 &quot;SIZE(M)&quot;, -- 初始值       t.increment_by * 8 / 1024 &quot;NEXT(M)&quot;, -- 步长 1blok = 8KB        t.maxbytes / 1024 / 1024 &quot;MAXSIZE(M)&quot;  -- 最大值  from dba_data_files t where t.tablespace_name IN (&#39;TBS01&#39;,&#39;TBS02&#39;);</code></pre><h2 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h2><h3 id="例1：修改数据文件的大小为-20M"><a href="#例1：修改数据文件的大小为-20M" class="headerlink" title="例1：修改数据文件的大小为 20M"></a>例1：修改数据文件的大小为 20M</h3><pre><code class="sql">alter database datafile &#39;D:\Oracle\TBS01.dbf&#39; resize 20m;</code></pre><h3 id="例2：修改数据文件为自动扩展，最大值为-1G"><a href="#例2：修改数据文件为自动扩展，最大值为-1G" class="headerlink" title="例2：修改数据文件为自动扩展，最大值为 1G"></a>例2：修改数据文件为自动扩展，最大值为 1G</h3><pre><code class="sql">alter database datafile &#39;D:\Oracle\TBS01.dbf&#39; autoextend on next 20m maxsize 1g;</code></pre><h3 id="例3：新增数据文件"><a href="#例3：新增数据文件" class="headerlink" title="例3：新增数据文件"></a>例3：新增数据文件</h3><pre><code class="sql">alter tablespace &quot;TBS01&quot; add datafile &#39;D:\Oracle\TBS01_1.dbf&#39; size 200m;</code></pre><h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><h3 id="例1：脱机（表空间为空）"><a href="#例1：脱机（表空间为空）" class="headerlink" title="例1：脱机（表空间为空）"></a>例1：脱机（表空间为空）</h3><pre><code class="sql">drop tablespace &quot;TBS&quot;;</code></pre><h3 id="例2：脱机（表空间里有数据）"><a href="#例2：脱机（表空间里有数据）" class="headerlink" title="例2：脱机（表空间里有数据）"></a>例2：脱机（表空间里有数据）</h3><pre><code class="sql">drop tablespace &quot;TBS&quot; including contents;</code></pre><h3 id="例3：完全删除（表空间-数据文件）"><a href="#例3：完全删除（表空间-数据文件）" class="headerlink" title="例3：完全删除（表空间 + 数据文件）"></a>例3：完全删除（表空间 + 数据文件）</h3><pre><code class="sql">drop tablespace &quot;TBS&quot; including contents and datafiles;</code></pre><h3 id="例4：若存在约束，则追加下列子句即可"><a href="#例4：若存在约束，则追加下列子句即可" class="headerlink" title="例4：若存在约束，则追加下列子句即可"></a>例4：若存在约束，则追加下列子句即可</h3><pre><code class="sql">cascade constraints;</code></pre><h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><pre><code class="sql">-- 数据文件select * from dba_data_files;-- 表空间select * from dba_tablespaces;select * from dba_free_space;-- 权限select distinct t.privilege  from dba_sys_privs t where t.privilege like &#39;%TABLESPACE%&#39;;</code></pre><h3 id="例1：查询表空间清单"><a href="#例1：查询表空间清单" class="headerlink" title="例1：查询表空间清单"></a>例1：查询表空间清单</h3><pre><code class="sql">select ddf.tablespace_name 表空间名,       ddf.file_name 数据文件名,       ddf.file_id 数据文件id,       ddf.autoextensible 是否自动扩展,       ddf.bytes / 1024 / 1024 &quot;数据文件大小（M）&quot;,       ddf.increment_by * 8 / 1024 &quot;自增步长（M）&quot;,       round(ddf.maxbytes / 1021 / 1021) &quot;数据文件最大值（M）&quot;,       dt.contents 表空间类型,       dt.logging 是否生成日志,       dt.extent_management 管理模式,       dt.allocation_type 分配类型,       dt.segment_space_management 段管理模式  from dba_data_files  ddf, -- tablespace_name       dba_tablespaces dt -- tablespace_name where dt.tablespace_name = ddf.tablespace_name order by ddf.file_id;</code></pre><h3 id="例2：表空间使用情况"><a href="#例2：表空间使用情况" class="headerlink" title="例2：表空间使用情况"></a>例2：表空间使用情况</h3><pre><code class="sql">with temp_data_files as (select ddf.tablespace_name, sum(bytes) total    from dba_data_files ddf   group by ddf.tablespace_name),temp_free_space as (select dfs.tablespace_name, sum(bytes) free    from dba_free_space dfs   group by dfs.tablespace_name)select dt.tablespace_name 表空间名称,       dt.contents 类型,       (tdf.total / 1024 / 1024) &quot;总大小(M)&quot;,       (tfs.free / 1024 / 1024) &quot;空闲(M)&quot;,       round((tdf.total - tfs.free) / 1024 / 1024, 2) &quot;已使用(M)&quot;,       round((tdf.total - tfs.free) / tdf.total * 100, 2) &quot;占比(%)&quot;  from dba_tablespaces dt, -- tablespace_name       temp_data_files tdf, -- tablespace_name       temp_free_space tfs -- tablespace_name where tdf.tablespace_name = dt.tablespace_name   and tfs.tablespace_name = dt.tablespace_name;</code></pre><h3 id="例3：创建用户并指定表空间"><a href="#例3：创建用户并指定表空间" class="headerlink" title="例3：创建用户并指定表空间"></a>例3：创建用户并指定表空间</h3><pre><code class="sql">-- 创建表空间CREATE TABLESPACE WZW DATAFILE &#39;C:\APP\ORACLE\ORADATA\ORCL\WZW.DBF&#39; SIZE 10m autoextend ON NEXT 10m maxsize 100m;-- 创建临时表空间CREATE TEMPORARY TABLESPACE WZW_TMP TEMPFILE &#39;C:\APP\ORACLE\ORADATA\ORCL\WZW_TMP.DBF&#39; SIZE 10m autoextend ON NEXT 10m maxsize 100M;-- 创建用户并指定表空间CREATE USER WZW IDENTIFIED BY WZW DEFAULT tablespace WZW temporary tablespace WZW_TMP;-- 授权GRANT CONNECT TO WZW;GRANT RESOURCE TO WZW;</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Oracle 数据库的表空间操作，包括：创建、修改、删除、查询&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="https://xwls.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="oracle" scheme="https://xwls.github.io/tags/oracle/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>RabbitMQ 实现延迟消息</title>
+    <link href="https://xwls.github.io/2022/07/15/rabbitmq-delayed-message-exchange/"/>
+    <id>https://xwls.github.io/2022/07/15/rabbitmq-delayed-message-exchange/</id>
+    <published>2022-07-15T08:02:35.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>RabbitMQ 实现延迟消息，rabbitmq_delayed_message_exchange 插件</p><span id="more"></span><h2 id="下载延时消息插件"><a href="#下载延时消息插件" class="headerlink" title="下载延时消息插件"></a>下载延时消息插件</h2><ul><li>插件首页：<a href="https://www.rabbitmq.com/community-plugins.html">https://www.rabbitmq.com/community-plugins.html</a></li><li>Github：<a href="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange">https://github.com/rabbitmq/rabbitmq-delayed-message-exchange</a></li><li>Github Releases：<a href="https://github.com/rabbitmq/rabbitmq-routing-node-stamp/releases">https://github.com/rabbitmq/rabbitmq-routing-node-stamp/releases</a></li></ul><h2 id="在-Docker-环境下，安装延迟消息插件"><a href="#在-Docker-环境下，安装延迟消息插件" class="headerlink" title="在 Docker 环境下，安装延迟消息插件"></a>在 Docker 环境下，安装延迟消息插件</h2><p>进入容器找到 plugins 目录</p><pre><code class="bash">docker exec -it rabbitmq bash##可以看到，plugins 就是存放 mq 插件的地方了ls </code></pre><p>将插件复制到 plugins 目录下</p><pre><code class="bash">cd /usr/etc/rabbitmq_pluginsdocker cp rabbitmq_delayed_message_exchange-3.8.0.ez rabbitmq:/plugins</code></pre><p>回到 plugins 目录，查看 plugins 中是否有 rabbitmq_delayed_message_exchange 插件</p><p><img src="https://xwls-oss.netlify.app/images/202210111603258.webp" alt="202210111603258"></p><p>激活插件</p><pre><code class="bash">rabbitmq-plugins enable rabbitmq_delayed_message_exchange</code></pre><p><img src="https://xwls-oss.netlify.app/images/202210111604293.webp" alt="202210111604293"></p><p>重启 RabbitMQ</p><pre><code class="bash">docker restart rabbitmq</code></pre><p>进入 RabbitMQ 管理界面查看插件是否成功生效</p><p><img src="https://xwls-oss.netlify.app/images/202210111604761.webp" alt="202210111604761"></p><p>OK, 完成以上工作，就可以编写 Java 代码发送延迟消息了。</p><h2 id="SpringBoot-中发送延迟消息"><a href="#SpringBoot-中发送延迟消息" class="headerlink" title="SpringBoot 中发送延迟消息"></a>SpringBoot 中发送延迟消息</h2><h3 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h3><pre><code class="java">package com.xjm.mid.compent.rabbitmq.config;import org.springframework.amqp.core.Binding;import org.springframework.amqp.core.BindingBuilder;import org.springframework.amqp.core.CustomExchange;import org.springframework.amqp.core.Queue;import org.springframework.context.annotation.Bean;import org.springframework.context.annotation.Configuration;import java.util.HashMap;import java.util.Map;/** * @author jaymin * 2020/09/22 */@Configurationpublic class RabbitMQDelayedMessageConfig &#123;    /**     * 延迟消息交换机     */    public final static String DELAY_EXCHANGE = &quot;jaymin.delay.exchange&quot;;    /**     * 队列     */    public final static String DELAY_QUEUE = &quot;jaymin.delay.queue&quot;;    /**     * 路由 Key     */    public final static String DELAY_ROUTING_KEY = &quot;jaymin.delay.routingKey&quot;;    @Bean    public CustomExchange delayMessageExchange() &#123;        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();        args.put(&quot;x-delayed-type&quot;, &quot;direct&quot;);        //自定义交换机        return new CustomExchange(DELAY_EXCHANGE, &quot;x-delayed-message&quot;, false, false, args);    &#125;    @Bean    public Queue delayMessageQueue() &#123;        return new Queue(DELAY_QUEUE, false, false, false);    &#125;    @Bean    public Binding bindingDelayExchangeAndQueue() &#123;        return BindingBuilder.bind(delayMessageQueue()).to(delayMessageExchange()).with(DELAY_ROUTING_KEY).noargs();    &#125;&#125;</code></pre><h3 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h3><pre><code class="java">package com.xjm.mid.compent.rabbitmq.web;import com.xjm.mid.compent.rabbitmq.config.RabbitMQDelayedMessageConfig;import com.xjm.mid.compent.rabbitmq.model.Letter;import lombok.extern.slf4j.Slf4j;import org.springframework.amqp.rabbit.core.RabbitTemplate;import org.springframework.beans.factory.annotation.Autowired;import org.springframework.web.bind.annotation.PostMapping;import org.springframework.web.bind.annotation.RequestMapping;import org.springframework.web.bind.annotation.RestController;import java.time.LocalDateTime;/** * @author jaymin * 2020/09/22 */@RestController@RequestMapping(&quot;/message/delayed&quot;)@Slf4jpublic class DelayedMessageClient &#123;    @Autowired    private RabbitTemplate rabbitTemplate;    @PostMapping(&quot;/ten&quot;)    public void sendDelayedMessage1()&#123;        Letter letter = new Letter();        letter.setRecipient(&quot;福尔摩斯&quot;);        letter.setContext(&quot;您的 10S 外卖到了！&quot;);        Integer ttl = 10000;        rabbitTemplate.convertAndSend(RabbitMQDelayedMessageConfig.DELAY_EXCHANGE, RabbitMQDelayedMessageConfig.DELAY_ROUTING_KEY, letter, message -&gt; &#123;            // 设置过期时间            message.getMessageProperties().setDelay(ttl);            return message;        &#125;);        log.info(&quot;[发送时间] - [&#123;&#125;]-[过期时间]-[&#123;&#125;]&quot;, LocalDateTime.now(), ttl/1000);    &#125;    @PostMapping(&quot;/five&quot;)    public void sendDelayedMessage2()&#123;        Letter letter = new Letter();        letter.setRecipient(&quot;福尔摩斯&quot;);        letter.setContext(&quot;您的 5S 外卖到了！&quot;);        Integer ttl = 5000;        rabbitTemplate.convertAndSend(RabbitMQDelayedMessageConfig.DELAY_EXCHANGE, RabbitMQDelayedMessageConfig.DELAY_ROUTING_KEY, letter, message -&gt; &#123;            // 设置过期时间            message.getMessageProperties().setDelay(ttl);            return message;        &#125;);        log.info(&quot;[发送时间] - [&#123;&#125;]-[过期时间]-[&#123;&#125;]&quot;, LocalDateTime.now(), ttl/1000);    &#125;&#125;</code></pre><h3 id="Listener"><a href="#Listener" class="headerlink" title="Listener"></a>Listener</h3><pre><code class="java">package com.xjm.mid.compent.rabbitmq.web;import com.rabbitmq.client.Channel;import com.xjm.mid.compent.rabbitmq.config.RabbitMQDelayedMessageConfig;import com.xjm.mid.compent.rabbitmq.model.Letter;import lombok.extern.slf4j.Slf4j;import org.springframework.amqp.core.Message;import org.springframework.amqp.rabbit.annotation.RabbitHandler;import org.springframework.amqp.rabbit.annotation.RabbitListener;import org.springframework.stereotype.Component;import java.io.IOException;import java.time.LocalDateTime;/** * @author jaymin * 2020/09/22 */@Component@Slf4jpublic class DelayMessageListener &#123;    @RabbitListener(queues = &#123;RabbitMQDelayedMessageConfig.DELAY_QUEUE&#125;)    @RabbitHandler    public void receiveMessage(Channel channel, Message message, Letter letter) &#123;        log.info(&quot;[listenerDelayQueue 监听的消息] - [消费时间] - [&#123;&#125;] - [&#123;&#125;]&quot;, LocalDateTime.now(), letter.toString());    &#125;&#125;</code></pre><h3 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h3><p><img src="https://xwls-oss.netlify.app/images/202210111605613.webp" alt="202210111605613"></p><p>rabbitmq 的延时插件极限时间是 8byte 长度 ms，大概 49 天。如果你的延时时间很长，建议配合定时任务进行处理。</p><p><code>message.getMessageProperties().setDelay(ttl);</code> 这种方式设置延迟时间话，理论上最多 24 天左右。因为 <code>setDelay()</code> 的参数是 <code>Integer</code> 类型的，<code>25</code> 天的时候就超过了 <code>Integer</code> 的长度了，变成了负数，下游立马收到消息的。建议改为 <code>message.getMessageProperties().getHeaders().put(&quot;x-delay&quot;,delay);</code></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;RabbitMQ 实现延迟消息，rabbitmq_delayed_message_exchange 插件&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="中间件" scheme="https://xwls.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+    
+    
+    <category term="mq" scheme="https://xwls.github.io/tags/mq/"/>
+    
+    <category term="rabbitmq" scheme="https://xwls.github.io/tags/rabbitmq/"/>
+    
+    <category term="中间件" scheme="https://xwls.github.io/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python 从 CSV 下载文件</title>
+    <link href="https://xwls.github.io/2022/07/02/python-download-file-from-csv/"/>
+    <id>https://xwls.github.io/2022/07/02/python-download-file-from-csv/</id>
+    <published>2022-07-02T07:56:31.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用 python 读取 csv 文件，解析文件内的 url 并下载到本地。</p><span id="more"></span><h2 id="CSV-文件"><a href="#CSV-文件" class="headerlink" title="CSV 文件"></a>CSV 文件</h2><pre><code class="text">img01,https://img.xxx.com/a/b/c/1.jpgimg02,https://img.xxx.com/a/b/c/2.jpgimg03,https://img.xxx.com/a/b/c/3.jpgimg04,https://img.xxx.com/a/b/c/4.jpg</code></pre><h2 id="Python-代码"><a href="#Python-代码" class="headerlink" title="Python 代码"></a>Python 代码</h2><pre><code class="python">import csvimport requestswith open(&quot;urls.csv&quot;) as f:    f_csv = csv.reader(f)    for row in f_csv:        img_name = row[0]        img_url = row[1]        file_path = &quot;./imgs/&quot;+img_name+&quot;.png&quot;        r = requests.get(img_url)        with open(file_path, &quot;wb&quot;) as save_file:            save_file.write(r.content)        print(img_name+&quot; download complete&quot;)</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;使用 python 读取 csv 文件，解析文件内的 url 并下载到本地。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Python" scheme="https://xwls.github.io/categories/Python/"/>
+    
+    
+    <category term="util" scheme="https://xwls.github.io/tags/util/"/>
+    
+    <category term="python" scheme="https://xwls.github.io/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python 中 pip 设置为阿里镜像源</title>
+    <link href="https://xwls.github.io/2022/07/01/python-pip-aliyun-mirrors/"/>
+    <id>https://xwls.github.io/2022/07/01/python-pip-aliyun-mirrors/</id>
+    <published>2022-07-01T07:47:42.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>Python 中的 pip 默认源，在国内下载很慢，修改为阿里云的 pip 源提升下载速度。</p><span id="more"></span><h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>a. 找到下列文件</p><p>Linux 在<code>~/.pip/pip.conf</code>,Windows 在<code>~/AppData/Roaming/pip/pip.ini</code></p><p>b. 在上述文件中添加或修改：</p><pre><code class="text">[global]index-url = https://mirrors.aliyun.com/pypi/simple/[install]trusted-host=mirrors.aliyun.com</code></pre><h2 id="使用命令设置"><a href="#使用命令设置" class="headerlink" title="使用命令设置"></a>使用命令设置</h2><pre><code class="text">pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Python 中的 pip 默认源，在国内下载很慢，修改为阿里云的 pip 源提升下载速度。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Python" scheme="https://xwls.github.io/categories/Python/"/>
+    
+    
+    <category term="python" scheme="https://xwls.github.io/tags/python/"/>
+    
+    <category term="mirror" scheme="https://xwls.github.io/tags/mirror/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Golang 并发编程示例</title>
+    <link href="https://xwls.github.io/2022/06/28/golang-concurrency/"/>
+    <id>https://xwls.github.io/2022/06/28/golang-concurrency/</id>
+    <published>2022-06-28T07:44:40.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>golang 并发编程的几个小例子</p><span id="more"></span><h2 id="Goroutines"><a href="#Goroutines" class="headerlink" title="Goroutines"></a>Goroutines</h2><pre><code class="go">func main() &#123;  // A &quot;channel&quot;  ch := make(chan string)  // Start concurrent routines  go push(&quot;Moe&quot;, ch)  go push(&quot;Larry&quot;, ch)  go push(&quot;Curly&quot;, ch)  // Read 3 results  // (Since our goroutines are concurrent,  // the order isn&#39;t guaranteed!)  fmt.Println(&lt;-ch, &lt;-ch, &lt;-ch)&#125;func push(name string, ch chan string) &#123;  msg := &quot;Hey, &quot; + name + &quot;! &quot;  ch &lt;- msg&#125;</code></pre><pre><code class="text">hey, Curly!  hey, Moe!  hey, Larry!</code></pre><p>Channels are concurrency-safe communication objects, used in goroutines.</p><p>See: <a href="https://tour.golang.org/concurrency/1">Goroutines</a>, <a href="https://tour.golang.org/concurrency/2">Channels</a></p><h2 id="Buffered-channels"><a href="#Buffered-channels" class="headerlink" title="Buffered channels"></a>Buffered channels</h2><pre><code class="go">ch := make(chan int, 2)ch &lt;- 1ch &lt;- 2ch &lt;- 3// fatal error:// all goroutines are asleep - deadlock!</code></pre><pre><code class="text">fatal error: all goroutines are asleep - deadlock!</code></pre><p>Buffered channels limit the amount of messages it can keep.</p><p>See: <a href="https://go.dev/tour/concurrency/3">Buffered channels</a></p><h2 id="Closing-channels"><a href="#Closing-channels" class="headerlink" title="Closing channels"></a>Closing channels</h2><pre><code class="go">ch &lt;- 1ch &lt;- 2ch &lt;- 3close(ch)</code></pre><p>Iterates across a channel until its closed</p><pre><code class="go">for i := range ch &#123;  ···&#125;</code></pre><p>Closed if ok &#x3D;&#x3D; false</p><pre><code class="go">v, ok := &lt;- ch</code></pre><p>See: <a href="https://tour.golang.org/concurrency/4">Range and close</a></p><h2 id="WaitGroup"><a href="#WaitGroup" class="headerlink" title="WaitGroup"></a>WaitGroup</h2><pre><code class="go">import &quot;sync&quot;func main() &#123;  var wg sync.WaitGroup    for _, item := range itemList &#123;    // Increment WaitGroup Counter    wg.Add(1)    go doOperation(&amp;wg, item)  &#125;  // Wait for goroutines to finish  wg.Wait()  &#125;func doOperation(wg *sync.WaitGroup, item string) &#123;  defer wg.Done()  // do operation on item  // ...&#125;</code></pre><p>A WaitGroup waits for a collection of goroutines to finish. The main goroutine calls Add to set the number of goroutines to wait for. The goroutine calls wg.Done() when it finishes. See: <a href="https://golang.org/pkg/sync/#WaitGroup">WaitGroup</a></p><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol><li><a href="https://devhints.io/go">https://devhints.io/go</a></li></ol>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;golang 并发编程的几个小例子&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Golang" scheme="https://xwls.github.io/categories/Golang/"/>
+    
+    
+    <category term="go" scheme="https://xwls.github.io/tags/go/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hyper-v 占用其他软件或服务端口解决方案</title>
+    <link href="https://xwls.github.io/2022/06/14/hyper-v-port-use/"/>
+    <id>https://xwls.github.io/2022/06/14/hyper-v-port-use/</id>
+    <published>2022-06-14T07:38:14.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>hyper-v 占用其他软件或服务端口解决方案</p><span id="more"></span><h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>Windows 中有一个「TCP 动态端口范围」，处在这个范围内的端口，有时候会被一些服务占用。在 Windows Vista（或 Windows Server 2008）之前，动态端口范围是 1025 到 5000；在 Windows Vista（或 Windows Server 2008）之后，新的默认起始端口为 49152，新的默认结束端口为 65535。<br>如果安装了 Hyper-V，那么 Hyper-V 会为容器宿主网络服务（Windows Container Host Networking Service）随机保留一些端口号使用。<br>正常情况下，Hyper-V 虽然会在「TCP 动态端口范围」中随机挑一些端口号保留（占用），不过保留的端口号普遍比较大，就算保留几百、几千个也影响不大。但是，Windows 自动更新有时会出错，导致这个范围的起始端口被重置为 1024……这可就麻烦了，一些常用端口动不动就因为被保留而无法使用了。</p><p>使用命令查看目前「TCP 动态端口」的范围。</p><pre><code class="cmd">netsh int ipv4 show dynamicport tcp</code></pre><p><img src="https://xwls-oss.netlify.app/images/202210111541566.webp" alt="202210111541566"></p><p>这只是一个「待选择」范围，并不代表其中的所有端口都会被保留，只是有一部分会被 Hyper-V 征用。使用命令可以查看当前所有已经被征用了的端口。</p><pre><code class="cmd">netsh int ipv4 show excludedportrange protocol=tcp</code></pre><p><img src="https://xwls-oss.netlify.app/images/202210111541429.webp" alt="202210111541429"></p><p>如果这些被征用的端口范围随机挑选到 8088、8000、3000 等 Web 开发常用端口，那开发就会受到影响；如果挑选到其他应用软件要调用的端口，那这些应用软件就会受到影响，可以说非常坑爹了……</p><p>在说正确的解决方法前，我们先说一个在 Stack Overflow 上看到的错误解决方法，这个方法还在好几个地方被提到过。</p><h2 id="错误的解决方法"><a href="#错误的解决方法" class="headerlink" title="错误的解决方法"></a>错误的解决方法</h2><p>错误的解决方法是，运行 <code>net stop winnat</code> 停止 winnat 服务，然后再运行 <code>net start winnat</code> 启动 winnat 服务。</p><p>这个方法本质上就是重启电脑的简化版……让 Hyper-V 再随机初始化一些端口保留，如果正好没随机到要用的端口，那一次成功。如果还是随机到了要用的端口，那就只能多来几次。</p><p>在那个问题的回答下，我看到有一些网友说「对我有用」，也有一些网友说「对我没用」，原因就是这个方法解决问题的概率完全是随机的……</p><h2 id="正确的解决方法"><a href="#正确的解决方法" class="headerlink" title="正确的解决方法"></a>正确的解决方法</h2><p>正确的解决方法很简单，就是重新设置一下「TCP 动态端口范围」，让 Hyper-V 只在我们设定的范围内保留端口即可。可以以管理员权限运行下面的命令，将「TCP 动态端口范围」重新设定为 49152-65535。如果你觉得这个范围太大，还可以改小一点。</p><pre><code class="cmd">netsh int ipv4 set dynamic tcp start=49152 num=16384netsh int ipv6 set dynamic tcp start=49152 num=16384</code></pre><p><img src="https://xwls-oss.netlify.app/images/202210111541275.webp" alt="202210111541275"></p><p>然后重启电脑即可。</p><p>重启电脑后，再运行命令 <code>netsh int ipv4 show dynamicport tcp</code> 查看动态端口范围，发现确实已经修改为了 49152-65535。现在只有这个范围内的端口可能会被保留了，基本不会影响日常使用。</p><p><img src="https://xwls-oss.netlify.app/images/202210111541615.webp" alt="202210111541615"></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;hyper-v 占用其他软件或服务端口解决方案&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="小技巧" scheme="https://xwls.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+    
+    
+    <category term="虚拟机" scheme="https://xwls.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+    
+    <category term="windows" scheme="https://xwls.github.io/tags/windows/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ubuntu 安装 Docker CE</title>
+    <link href="https://xwls.github.io/2022/05/09/ubuntu-install-docker-ce/"/>
+    <id>https://xwls.github.io/2022/05/09/ubuntu-install-docker-ce/</id>
+    <published>2022-05-09T07:34:51.000Z</published>
+    <updated>2023-08-18T03:56:18.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>Ubuntu 安装 Docker CE</p><span id="more"></span><pre><code class="bash"># step 1: 安装必要的一些系统工具sudo apt-get updatesudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common# step 2: 安装 GPG 证书curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -# Step 3: 写入软件源信息sudo add-apt-repository &quot;deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable&quot;# Step 4: 更新并安装 Docker-CEsudo apt-get -y updatesudo apt-get -y install docker-ce# 安装指定版本的 Docker-CE:# Step 1: 查找 Docker-CE 的版本：# apt-cache madison docker-ce#   docker-ce | 17.03.1~ce-0~ubuntu-xenial | https://mirrors.aliyun.com/docker-ce/linux/ubuntu xenial/stable amd64 Packages#   docker-ce | 17.03.0~ce-0~ubuntu-xenial | https://mirrors.aliyun.com/docker-ce/linux/ubuntu xenial/stable amd64 Packages# Step 2: 安装指定版本的 Docker-CE: (VERSION 例如上面的 17.03.1~ce-0~ubuntu-xenial)# sudo apt-get -y install docker-ce=[VERSION]</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Ubuntu 安装 Docker CE&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="https://xwls.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="docker" scheme="https://xwls.github.io/tags/docker/"/>
+    
+    <category term="ubuntu" scheme="https://xwls.github.io/tags/ubuntu/"/>
+    
+  </entry>
+  
+</feed>

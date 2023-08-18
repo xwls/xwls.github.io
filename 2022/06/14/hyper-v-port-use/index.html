@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+    <title>hyper-v 占用其他软件或服务端口解决方案 | 小汪老师</title>
+
+    <meta name="description" content="&lt;p&gt;hyper-v 占用其他软件或服务端口解决方案&lt;/p&gt;">
+    <meta name="keywords" content="">
+
+    
+
+    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content= "hyper-v 占用其他软件或服务端口解决方案 | 小汪老师"  />
+    <meta property="og:description" content= "&lt;p&gt;hyper-v 占用其他软件或服务端口解决方案&lt;/p&gt;" />
+    <meta property="og:url" content="https://xwls.github.io/2022/06/14/hyper-v-port-use/index.html" />
+    <meta property="og:site_name" content="" />
+    <meta property="article:author" content="Wang" />
+    <meta property="article:publisher" content="" />
+    <meta property="og:description" content="&lt;p&gt;hyper-v 占用其他软件或服务端口解决方案&lt;/p&gt;" />
+    <meta name="twitter:title" content="hyper-v 占用其他软件或服务端口解决方案 | 小汪老师"/>
+    <meta name="twitter:description" content="&lt;p&gt;hyper-v 占用其他软件或服务端口解决方案&lt;/p&gt;"/>
+    <script type="application/ld+json">
+        {
+            "description": "&lt;p&gt;hyper-v 占用其他软件或服务端口解决方案&lt;/p&gt;",
+            "author": { "@type": "Person", "name": "Wang" },
+            "@type": "BlogPosting",
+            "url": "https://xwls.github.io/2022/06/14/hyper-v-port-use/index.html",
+            "publisher": {
+            "@type": "Organization",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://xwls.github.ioundefined"
+            },
+            "name": "Wang"
+            },
+            "headline": "hyper-v 占用其他软件或服务端口解决方案 | 小汪老师",
+            "datePublished": "2022-06-14T07:38:14.000Z",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://xwls.github.io/2022/06/14/hyper-v-port-use/index.html"
+            },
+            "@context": "http://schema.org"
+        }
+    </script>
+
+
+
+
+    
+
+    
+    <meta property="algolia:search" data-application-id="BTY67B9N9Q" data-api-key="f6cf80ca4d009f1bdf3237b8df3ecbe0" data-index-name="test">
+    
+
+    
+
+    
+
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/dist/build.css?v=1654266144177.css">
+
+
+    
+<link rel="stylesheet" href="/dist/custom.css?v=1654266144177.css">
+
+
+    <script>
+        window.isPost = true
+        window.aomori = {
+            
+            
+            
+        }
+        window.aomori_logo_typed_animated = true
+        window.aomori_search_algolia = true
+
+    </script>
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="小汪老师" type="application/atom+xml">
+</head>
+
+<body>
+
+    <div class="container">
+    <header class="header">
+        <div class="header-type">
+            
+            <div class="header-type-inner">
+                
+                    <div id="typed-strings" style="display:none">
+                        <p>小汪老师</p>
+                    </div>
+                    <a class="header-type-title" id="typed" href="/"></a>
+                
+    
+                
+            </div>
+        </div>
+        <div class="header-menu">
+            <div class="header-menu-inner">
+                
+                <a href="/">首页</a>
+                
+                <a href="/archives">归档</a>
+                
+                <a href="/friends">收藏</a>
+                
+                <a href="/about">关于</a>
+                
+            </div>
+            <div class="header-menu-social">
+                
+    <a class="social" target="_blank" href="https://github.com/xwls">
+        <ion-icon name="logo-github"></ion-icon>
+    </a>
+
+            </div>
+        </div>
+
+        <div class="header-menu-mobile">
+            <div class="header-menu-mobile-inner" id="mobile-menu-open">
+                <i class="icon icon-menu"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-menu-mobile-menu">
+        <div class="header-menu-mobile-menu-bg"></div>
+        <div class="header-menu-mobile-menu-wrap">
+            <div class="header-menu-mobile-menu-inner">
+                <div class="header-menu-mobile-menu-close" id="mobile-menu-close">
+                    <i class="icon icon-cross"></i>
+                </div>
+                <div class="header-menu-mobile-menu-list">
+                    
+                    <a href="/">首页</a>
+                    
+                    <a href="/archives">归档</a>
+                    
+                    <a href="/friends">收藏</a>
+                    
+                    <a href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="container">
+        <div class="main">
+            <section class="inner">
+                <section class="inner-main">
+                    <div class="post">
+    <article id="post-cllg26i4a000sfxq79rkfaa0v" class="article article-type-post" itemscope
+    itemprop="blogPost">
+
+    <div class="article-inner">
+
+        
+          
+        
+        
+        
+
+        
+        <header class="article-header">
+            
+  
+    <h1 class="article-title" itemprop="name">
+      hyper-v 占用其他软件或服务端口解决方案
+    </h1>
+  
+
+        </header>
+        
+
+        <div class="article-more-info article-more-info-post hairline">
+
+            <div class="article-date">
+  <time datetime="2022-06-14T07:38:14.000Z" itemprop="datePublished">2022-06-14</time>
+</div>
+
+            
+            <div class="article-category">
+                <a class="article-category-link" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/">小技巧</a>
+            </div>
+            
+
+            
+            <div class="article-tag">
+                <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/" rel="tag">windows</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li></ul>
+            </div>
+            
+
+            
+
+        </div>
+
+        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
+            <p>hyper-v 占用其他软件或服务端口解决方案</p>
+<span id="more"></span>
+
+<h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>Windows 中有一个「TCP 动态端口范围」，处在这个范围内的端口，有时候会被一些服务占用。在 Windows Vista（或 Windows Server 2008）之前，动态端口范围是 1025 到 5000；在 Windows Vista（或 Windows Server 2008）之后，新的默认起始端口为 49152，新的默认结束端口为 65535。<br>如果安装了 Hyper-V，那么 Hyper-V 会为容器宿主网络服务（Windows Container Host Networking Service）随机保留一些端口号使用。<br>正常情况下，Hyper-V 虽然会在「TCP 动态端口范围」中随机挑一些端口号保留（占用），不过保留的端口号普遍比较大，就算保留几百、几千个也影响不大。但是，Windows 自动更新有时会出错，导致这个范围的起始端口被重置为 1024……这可就麻烦了，一些常用端口动不动就因为被保留而无法使用了。</p>
+<p>使用命令查看目前「TCP 动态端口」的范围。</p>
+<pre><code class="cmd">netsh int ipv4 show dynamicport tcp
+</code></pre>
+<p><img src="https://xwls-oss.netlify.app/images/202210111541566.webp" alt="202210111541566"></p>
+<p>这只是一个「待选择」范围，并不代表其中的所有端口都会被保留，只是有一部分会被 Hyper-V 征用。使用命令可以查看当前所有已经被征用了的端口。</p>
+<pre><code class="cmd">netsh int ipv4 show excludedportrange protocol=tcp
+</code></pre>
+<p><img src="https://xwls-oss.netlify.app/images/202210111541429.webp" alt="202210111541429"></p>
+<p>如果这些被征用的端口范围随机挑选到 8088、8000、3000 等 Web 开发常用端口，那开发就会受到影响；如果挑选到其他应用软件要调用的端口，那这些应用软件就会受到影响，可以说非常坑爹了……</p>
+<p>在说正确的解决方法前，我们先说一个在 Stack Overflow 上看到的错误解决方法，这个方法还在好几个地方被提到过。</p>
+<h2 id="错误的解决方法"><a href="#错误的解决方法" class="headerlink" title="错误的解决方法"></a>错误的解决方法</h2><p>错误的解决方法是，运行 <code>net stop winnat</code> 停止 winnat 服务，然后再运行 <code>net start winnat</code> 启动 winnat 服务。</p>
+<p>这个方法本质上就是重启电脑的简化版……让 Hyper-V 再随机初始化一些端口保留，如果正好没随机到要用的端口，那一次成功。如果还是随机到了要用的端口，那就只能多来几次。</p>
+<p>在那个问题的回答下，我看到有一些网友说「对我有用」，也有一些网友说「对我没用」，原因就是这个方法解决问题的概率完全是随机的……</p>
+<h2 id="正确的解决方法"><a href="#正确的解决方法" class="headerlink" title="正确的解决方法"></a>正确的解决方法</h2><p>正确的解决方法很简单，就是重新设置一下「TCP 动态端口范围」，让 Hyper-V 只在我们设定的范围内保留端口即可。可以以管理员权限运行下面的命令，将「TCP 动态端口范围」重新设定为 49152-65535。如果你觉得这个范围太大，还可以改小一点。</p>
+<pre><code class="cmd">netsh int ipv4 set dynamic tcp start=49152 num=16384
+netsh int ipv6 set dynamic tcp start=49152 num=16384
+</code></pre>
+<p><img src="https://xwls-oss.netlify.app/images/202210111541275.webp" alt="202210111541275"></p>
+<p>然后重启电脑即可。</p>
+<p>重启电脑后，再运行命令 <code>netsh int ipv4 show dynamicport tcp</code> 查看动态端口范围，发现确实已经修改为了 49152-65535。现在只有这个范围内的端口可能会被保留了，基本不会影响日常使用。</p>
+<p><img src="https://xwls-oss.netlify.app/images/202210111541615.webp" alt="202210111541615"></p>
+
+        </div>
+
+    </div>
+
+    
+
+    
+<div class="article-reprint hairline">
+  
+    <p>
+      文章转载自 <a target="_blank" href="https://blog.csdn.net/ning521513/article/details/123524763">https://blog.csdn.net/ning521513/article/details/123524763</a>
+    </p>
+  
+</div>
+
+
+    
+
+    
+  <div class="article-copyright hairline">
+    <p>
+      本作品采用  <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议 (CC BY-NC-ND 4.0)</a> 进行许可。
+    </p>
+  </div>
+  
+
+    
+
+    
+<nav class="article-nav">
+  
+    <a href="/2022/06/28/golang-concurrency/" id="article-nav-newer" class="article-nav-link-wrap">
+      <div class="article-nav-caption">下一篇</div>
+      <div class="article-nav-title">
+        
+          Golang 并发编程示例
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/05/09/ubuntu-install-docker-ce/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-caption">上一篇</div>
+      <div class="article-nav-title">Ubuntu 安装 Docker CE</div>
+    </a>
+  
+</nav>
+
+
+    <section class="share">
+        <div class="share-title">分享</div>
+        <a class="share-item" target="_blank"
+            href="https://twitter.com/share?text=hyper-v 占用其他软件或服务端口解决方案 - 小汪老师&url=https%3A%2F%2Fxwls.github.io%2F2022%2F06%2F14%2Fhyper-v-port-use%2F">
+            <ion-icon name="logo-twitter"></ion-icon>
+        </a>
+        <a class="share-item" target="_blank"
+            href="https://www.facebook.com/sharer.php?title=hyper-v 占用其他软件或服务端口解决方案 - 小汪老师&u=https%3A%2F%2Fxwls.github.io%2F2022%2F06%2F14%2Fhyper-v-port-use%2F">
+            <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <!-- <a class="share-item" target="_blank"
+            href="https://service.weibo.com/share/share.php?title=hyper-v 占用其他软件或服务端口解决方案 - 小汪老师&url=https://xwls.github.io/2022/06/14/hyper-v-port-use/&pic=">
+            <div class="n-icon n-icon-weibo"></div>
+        </a> -->
+    </section>
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+                </section>
+            </section>
+
+            
+            <aside class="sidebar sidebar-search-fix">
+                
+
+    <div class="search">
+    <div class="has-icon-right">
+        <input type="text" class="form-input" id="search" placeholder="SEARCH" autocomplete="off">
+        <div class="form-icon">
+            <ion-icon name="search"></ion-icon>
+        </div>
+    </div>
+    <div class="search-result" id="search-ps"></div>
+</div>
+
+
+<div class="widget" id="widget">
+    
+      
+  <div class="widget-wrap">
+    <div class="widget-inner">
+      <div class="toc post-toc-html"></div>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-cate">
+    <div class="widget-title"><span>Categories</span></div>
+    <div class="widget-inner">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Util/">Util</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/">小技巧</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-recent-posts">
+    <div class="widget-title"><span>Recent Posts</span></div>
+    <div class="widget-inner">
+      <ul>
+        
+          <li>
+            <a href="/2023/02/16/ceph-cluster-install/">Ubuntu 22.04 安装 ceph 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-ingress-canary/">k8s 通过 Ingress 进行灰度发布</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-storgeclass-nfs/">k8s 存储类 nfs 网络存储</a>
+          </li>
+        
+          <li>
+            <a href="/2023/01/05/git-statistics/">git 统计代码量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/19/macos-minikube-k8s/">MacOS 使用 minikube 搭建 Kubernetes 环境</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-archive">
+    <div class="widget-title"><span>Archive</span></div>
+    <div class="widget-inner">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a></li></ul>
+    </div>
+  </div>
+
+
+    
+</div>
+
+<div id="backtop"><i class="icon icon-arrow-up"></i></div>
+            </aside>
+            
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-wave">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#3c4859" fill-opacity="1" d="M0,160L60,181.3C120,203,240,245,360,240C480,235,600,181,720,186.7C840,192,960,256,1080,261.3C1200,267,1320,213,1380,186.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
+    </div>
+
+    <!-- Please do not remove this -->
+    <!-- 开源不易，请勿删除 -->
+    <div class="footer-wrap">
+        <div class="footer-inner"> 
+            小汪老师 &copy; 2023<br>
+            Powered By Hexo · Theme By <a href="https://linhong.me/" target="_blank">Aomori</a> · <a href="https://github.com/lh1me/hexo-theme-aomori" target="_blank">Github</a>
+        </div>
+    </div>
+
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@6.0.2/dist/ionicons/ionicons.esm.js"></script>
+
+
+
+
+
+
+<script src="/dist/build.js?1654266144177.js"></script>
+
+
+<script src="/dist/custom.js?1654266144177.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

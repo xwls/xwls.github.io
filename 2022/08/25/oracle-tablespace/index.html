@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+    <title>Oracle 表空间 | 小汪老师</title>
+
+    <meta name="description" content="&lt;p&gt;Oracle 数据库的表空间操作，包括：创建、修改、删除、查询&lt;/p&gt;">
+    <meta name="keywords" content="">
+
+    
+
+    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content= "Oracle 表空间 | 小汪老师"  />
+    <meta property="og:description" content= "&lt;p&gt;Oracle 数据库的表空间操作，包括：创建、修改、删除、查询&lt;/p&gt;" />
+    <meta property="og:url" content="https://xwls.github.io/2022/08/25/oracle-tablespace/index.html" />
+    <meta property="og:site_name" content="" />
+    <meta property="article:author" content="Wang" />
+    <meta property="article:publisher" content="" />
+    <meta property="og:description" content="&lt;p&gt;Oracle 数据库的表空间操作，包括：创建、修改、删除、查询&lt;/p&gt;" />
+    <meta name="twitter:title" content="Oracle 表空间 | 小汪老师"/>
+    <meta name="twitter:description" content="&lt;p&gt;Oracle 数据库的表空间操作，包括：创建、修改、删除、查询&lt;/p&gt;"/>
+    <script type="application/ld+json">
+        {
+            "description": "&lt;p&gt;Oracle 数据库的表空间操作，包括：创建、修改、删除、查询&lt;/p&gt;",
+            "author": { "@type": "Person", "name": "Wang" },
+            "@type": "BlogPosting",
+            "url": "https://xwls.github.io/2022/08/25/oracle-tablespace/index.html",
+            "publisher": {
+            "@type": "Organization",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://xwls.github.ioundefined"
+            },
+            "name": "Wang"
+            },
+            "headline": "Oracle 表空间 | 小汪老师",
+            "datePublished": "2022-08-25T08:06:59.000Z",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://xwls.github.io/2022/08/25/oracle-tablespace/index.html"
+            },
+            "@context": "http://schema.org"
+        }
+    </script>
+
+
+
+
+    
+
+    
+    <meta property="algolia:search" data-application-id="BTY67B9N9Q" data-api-key="f6cf80ca4d009f1bdf3237b8df3ecbe0" data-index-name="test">
+    
+
+    
+
+    
+
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/dist/build.css?v=1654266144177.css">
+
+
+    
+<link rel="stylesheet" href="/dist/custom.css?v=1654266144177.css">
+
+
+    <script>
+        window.isPost = true
+        window.aomori = {
+            
+            
+            
+        }
+        window.aomori_logo_typed_animated = true
+        window.aomori_search_algolia = true
+
+    </script>
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="小汪老师" type="application/atom+xml">
+</head>
+
+<body>
+
+    <div class="container">
+    <header class="header">
+        <div class="header-type">
+            
+            <div class="header-type-inner">
+                
+                    <div id="typed-strings" style="display:none">
+                        <p>小汪老师</p>
+                    </div>
+                    <a class="header-type-title" id="typed" href="/"></a>
+                
+    
+                
+            </div>
+        </div>
+        <div class="header-menu">
+            <div class="header-menu-inner">
+                
+                <a href="/">首页</a>
+                
+                <a href="/archives">归档</a>
+                
+                <a href="/friends">收藏</a>
+                
+                <a href="/about">关于</a>
+                
+            </div>
+            <div class="header-menu-social">
+                
+    <a class="social" target="_blank" href="https://github.com/xwls">
+        <ion-icon name="logo-github"></ion-icon>
+    </a>
+
+            </div>
+        </div>
+
+        <div class="header-menu-mobile">
+            <div class="header-menu-mobile-inner" id="mobile-menu-open">
+                <i class="icon icon-menu"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-menu-mobile-menu">
+        <div class="header-menu-mobile-menu-bg"></div>
+        <div class="header-menu-mobile-menu-wrap">
+            <div class="header-menu-mobile-menu-inner">
+                <div class="header-menu-mobile-menu-close" id="mobile-menu-close">
+                    <i class="icon icon-cross"></i>
+                </div>
+                <div class="header-menu-mobile-menu-list">
+                    
+                    <a href="/">首页</a>
+                    
+                    <a href="/archives">归档</a>
+                    
+                    <a href="/friends">收藏</a>
+                    
+                    <a href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="container">
+        <div class="main">
+            <section class="inner">
+                <section class="inner-main">
+                    <div class="post">
+    <article id="post-cllg26i4u001ufxq75gbb1lnl" class="article article-type-post" itemscope
+    itemprop="blogPost">
+
+    <div class="article-inner">
+
+        
+          
+        
+        
+        
+
+        
+        <header class="article-header">
+            
+  
+    <h1 class="article-title" itemprop="name">
+      Oracle 表空间
+    </h1>
+  
+
+        </header>
+        
+
+        <div class="article-more-info article-more-info-post hairline">
+
+            <div class="article-date">
+  <time datetime="2022-08-25T08:06:59.000Z" itemprop="datePublished">2022-08-25</time>
+</div>
+
+            
+            <div class="article-category">
+                <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+            </div>
+            
+
+            
+            <div class="article-tag">
+                <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oracle/" rel="tag">oracle</a></li></ul>
+            </div>
+            
+
+            
+
+        </div>
+
+        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
+            <p>Oracle 数据库的表空间操作，包括：创建、修改、删除、查询</p>
+<span id="more"></span>
+
+<h2 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h2><pre><code class="sql">-- 表空间类型及名称，默认不指定类型（永久）
+create [temporary | undo] tablespace &quot;TBS&quot; 
+-- 数据文件的位置及大小
+datafile &#39;D:\Oracle\TBS.dbf&#39; size 10m
+-- 是否自动扩展，默认 &#39;off&#39;
+[autoextend off] | [autoextend on next n maxsize m]  
+-- 是否产生日志，默认 &#39;loggin&#39;
+[loggin | nologgin]
+-- 段空间自动管理，默认 &#39;auto&#39; 推荐
+[segment space management auto]        
+-- 表空间管理方式，dictionary | local(默认，推荐)              
+[extent management local [uniform size n]]
+</code></pre>
+<h3 id="例1：创建一个永久表空间-“TBS01”，其大小为-10MB"><a href="#例1：创建一个永久表空间-“TBS01”，其大小为-10MB" class="headerlink" title="例1：创建一个永久表空间 “TBS01”，其大小为 10MB"></a>例1：创建一个永久表空间 “TBS01”，其大小为 10MB</h3><pre><code class="sql">create tablespace &quot;TBS01&quot;
+datafile &#39;D:\Oracle\TBS01.dbf&#39; size 10m;
+</code></pre>
+<p>1.路径必须存在，否则报错！<br>2.表空间名称默认大写，除非用引号注明，如 “tbs” 则为小写</p>
+<h3 id="例2：创建一个自增表空间-“TBS02”，其大小为-10MB，每次扩展-1MB，最大扩展到-20MB"><a href="#例2：创建一个自增表空间-“TBS02”，其大小为-10MB，每次扩展-1MB，最大扩展到-20MB" class="headerlink" title="例2：创建一个自增表空间 “TBS02”，其大小为 10MB，每次扩展 1MB，最大扩展到 20MB"></a>例2：创建一个自增表空间 “TBS02”，其大小为 10MB，每次扩展 1MB，最大扩展到 20MB</h3><pre><code class="sql">create tablespace &quot;TBS02&quot;
+datafile &#39;D:\Oracle\TBS02.dbf&#39; size 10m
+autoextend on next 1m maxsize 20m;
+</code></pre>
+<p>查询上述表空间的情况：1M &#x3D; 1024KB，1KB &#x3D; 1024 Byte</p>
+<pre><code class="sql">select t.tablespace_name, -- 表空间
+       t.file_name, -- 文件名
+       t.autoextensible, -- 是否自增
+       t.bytes / 1024 / 1024 &quot;SIZE(M)&quot;, -- 初始值
+       t.increment_by * 8 / 1024 &quot;NEXT(M)&quot;, -- 步长 1blok = 8KB 
+       t.maxbytes / 1024 / 1024 &quot;MAXSIZE(M)&quot;  -- 最大值
+  from dba_data_files t
+ where t.tablespace_name IN (&#39;TBS01&#39;,&#39;TBS02&#39;);
+</code></pre>
+<h2 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h2><h3 id="例1：修改数据文件的大小为-20M"><a href="#例1：修改数据文件的大小为-20M" class="headerlink" title="例1：修改数据文件的大小为 20M"></a>例1：修改数据文件的大小为 20M</h3><pre><code class="sql">alter database datafile &#39;D:\Oracle\TBS01.dbf&#39; resize 20m;
+</code></pre>
+<h3 id="例2：修改数据文件为自动扩展，最大值为-1G"><a href="#例2：修改数据文件为自动扩展，最大值为-1G" class="headerlink" title="例2：修改数据文件为自动扩展，最大值为 1G"></a>例2：修改数据文件为自动扩展，最大值为 1G</h3><pre><code class="sql">alter database datafile &#39;D:\Oracle\TBS01.dbf&#39; autoextend on next 20m maxsize 1g;
+</code></pre>
+<h3 id="例3：新增数据文件"><a href="#例3：新增数据文件" class="headerlink" title="例3：新增数据文件"></a>例3：新增数据文件</h3><pre><code class="sql">alter tablespace &quot;TBS01&quot; add datafile &#39;D:\Oracle\TBS01_1.dbf&#39; size 200m;
+</code></pre>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><h3 id="例1：脱机（表空间为空）"><a href="#例1：脱机（表空间为空）" class="headerlink" title="例1：脱机（表空间为空）"></a>例1：脱机（表空间为空）</h3><pre><code class="sql">drop tablespace &quot;TBS&quot;;
+</code></pre>
+<h3 id="例2：脱机（表空间里有数据）"><a href="#例2：脱机（表空间里有数据）" class="headerlink" title="例2：脱机（表空间里有数据）"></a>例2：脱机（表空间里有数据）</h3><pre><code class="sql">drop tablespace &quot;TBS&quot; including contents;
+</code></pre>
+<h3 id="例3：完全删除（表空间-数据文件）"><a href="#例3：完全删除（表空间-数据文件）" class="headerlink" title="例3：完全删除（表空间 + 数据文件）"></a>例3：完全删除（表空间 + 数据文件）</h3><pre><code class="sql">drop tablespace &quot;TBS&quot; including contents and datafiles;
+</code></pre>
+<h3 id="例4：若存在约束，则追加下列子句即可"><a href="#例4：若存在约束，则追加下列子句即可" class="headerlink" title="例4：若存在约束，则追加下列子句即可"></a>例4：若存在约束，则追加下列子句即可</h3><pre><code class="sql">cascade constraints;
+</code></pre>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><pre><code class="sql">-- 数据文件
+select * from dba_data_files;
+
+-- 表空间
+select * from dba_tablespaces;
+select * from dba_free_space;
+
+-- 权限
+select distinct t.privilege
+  from dba_sys_privs t
+ where t.privilege like &#39;%TABLESPACE%&#39;;
+</code></pre>
+<h3 id="例1：查询表空间清单"><a href="#例1：查询表空间清单" class="headerlink" title="例1：查询表空间清单"></a>例1：查询表空间清单</h3><pre><code class="sql">select ddf.tablespace_name 表空间名,
+       ddf.file_name 数据文件名,
+       ddf.file_id 数据文件id,
+       ddf.autoextensible 是否自动扩展,
+       ddf.bytes / 1024 / 1024 &quot;数据文件大小（M）&quot;,
+       ddf.increment_by * 8 / 1024 &quot;自增步长（M）&quot;,
+       round(ddf.maxbytes / 1021 / 1021) &quot;数据文件最大值（M）&quot;,
+       dt.contents 表空间类型,
+       dt.logging 是否生成日志,
+       dt.extent_management 管理模式,
+       dt.allocation_type 分配类型,
+       dt.segment_space_management 段管理模式
+  from dba_data_files  ddf, -- tablespace_name
+       dba_tablespaces dt -- tablespace_name
+ where dt.tablespace_name = ddf.tablespace_name
+ order by ddf.file_id;
+</code></pre>
+<h3 id="例2：表空间使用情况"><a href="#例2：表空间使用情况" class="headerlink" title="例2：表空间使用情况"></a>例2：表空间使用情况</h3><pre><code class="sql">with temp_data_files as
+ (select ddf.tablespace_name, sum(bytes) total
+    from dba_data_files ddf
+   group by ddf.tablespace_name),
+temp_free_space as
+ (select dfs.tablespace_name, sum(bytes) free
+    from dba_free_space dfs
+   group by dfs.tablespace_name)
+select dt.tablespace_name 表空间名称,
+       dt.contents 类型,
+       (tdf.total / 1024 / 1024) &quot;总大小(M)&quot;,
+       (tfs.free / 1024 / 1024) &quot;空闲(M)&quot;,
+       round((tdf.total - tfs.free) / 1024 / 1024, 2) &quot;已使用(M)&quot;,
+       round((tdf.total - tfs.free) / tdf.total * 100, 2) &quot;占比(%)&quot;
+  from dba_tablespaces dt, -- tablespace_name
+       temp_data_files tdf, -- tablespace_name
+       temp_free_space tfs -- tablespace_name
+ where tdf.tablespace_name = dt.tablespace_name
+   and tfs.tablespace_name = dt.tablespace_name;
+</code></pre>
+<h3 id="例3：创建用户并指定表空间"><a href="#例3：创建用户并指定表空间" class="headerlink" title="例3：创建用户并指定表空间"></a>例3：创建用户并指定表空间</h3><pre><code class="sql">-- 创建表空间
+CREATE TABLESPACE WZW DATAFILE &#39;C:\APP\ORACLE\ORADATA\ORCL\WZW.DBF&#39; SIZE 10m autoextend ON NEXT 10m maxsize 100m;
+-- 创建临时表空间
+CREATE TEMPORARY TABLESPACE WZW_TMP TEMPFILE &#39;C:\APP\ORACLE\ORADATA\ORCL\WZW_TMP.DBF&#39; SIZE 10m autoextend ON NEXT 10m maxsize 100M;
+-- 创建用户并指定表空间
+CREATE USER WZW IDENTIFIED BY WZW DEFAULT tablespace WZW temporary tablespace WZW_TMP;
+-- 授权
+GRANT CONNECT TO WZW;
+GRANT RESOURCE TO WZW;
+</code></pre>
+
+        </div>
+
+    </div>
+
+    
+
+    
+<div class="article-reprint hairline">
+  
+    <p>
+      文章转载自 <a target="_blank" href="https://blog.csdn.net/qq_34745941/article/details/91039626">https://blog.csdn.net/qq_34745941/article/details/91039626</a>
+    </p>
+  
+</div>
+
+
+    
+
+    
+  <div class="article-copyright hairline">
+    <p>
+      本作品采用  <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议 (CC BY-NC-ND 4.0)</a> 进行许可。
+    </p>
+  </div>
+  
+
+    
+
+    
+<nav class="article-nav">
+  
+    <a href="/2022/08/25/oracle-change-charset/" id="article-nav-newer" class="article-nav-link-wrap">
+      <div class="article-nav-caption">下一篇</div>
+      <div class="article-nav-title">
+        
+          修改 Oracle 数据库的字符集
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/07/15/rabbitmq-delayed-message-exchange/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-caption">上一篇</div>
+      <div class="article-nav-title">RabbitMQ 实现延迟消息</div>
+    </a>
+  
+</nav>
+
+
+    <section class="share">
+        <div class="share-title">分享</div>
+        <a class="share-item" target="_blank"
+            href="https://twitter.com/share?text=Oracle 表空间 - 小汪老师&url=https%3A%2F%2Fxwls.github.io%2F2022%2F08%2F25%2Foracle-tablespace%2F">
+            <ion-icon name="logo-twitter"></ion-icon>
+        </a>
+        <a class="share-item" target="_blank"
+            href="https://www.facebook.com/sharer.php?title=Oracle 表空间 - 小汪老师&u=https%3A%2F%2Fxwls.github.io%2F2022%2F08%2F25%2Foracle-tablespace%2F">
+            <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <!-- <a class="share-item" target="_blank"
+            href="https://service.weibo.com/share/share.php?title=Oracle 表空间 - 小汪老师&url=https://xwls.github.io/2022/08/25/oracle-tablespace/&pic=">
+            <div class="n-icon n-icon-weibo"></div>
+        </a> -->
+    </section>
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+                </section>
+            </section>
+
+            
+            <aside class="sidebar sidebar-search-fix">
+                
+
+    <div class="search">
+    <div class="has-icon-right">
+        <input type="text" class="form-input" id="search" placeholder="SEARCH" autocomplete="off">
+        <div class="form-icon">
+            <ion-icon name="search"></ion-icon>
+        </div>
+    </div>
+    <div class="search-result" id="search-ps"></div>
+</div>
+
+
+<div class="widget" id="widget">
+    
+      
+  <div class="widget-wrap">
+    <div class="widget-inner">
+      <div class="toc post-toc-html"></div>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-cate">
+    <div class="widget-title"><span>Categories</span></div>
+    <div class="widget-inner">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Util/">Util</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/">小技巧</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-recent-posts">
+    <div class="widget-title"><span>Recent Posts</span></div>
+    <div class="widget-inner">
+      <ul>
+        
+          <li>
+            <a href="/2023/02/16/ceph-cluster-install/">Ubuntu 22.04 安装 ceph 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-ingress-canary/">k8s 通过 Ingress 进行灰度发布</a>
+          </li>
+        
+          <li>
+            <a href="/2023/02/02/k8s-storgeclass-nfs/">k8s 存储类 nfs 网络存储</a>
+          </li>
+        
+          <li>
+            <a href="/2023/01/05/git-statistics/">git 统计代码量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/19/macos-minikube-k8s/">MacOS 使用 minikube 搭建 Kubernetes 环境</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-archive">
+    <div class="widget-title"><span>Archive</span></div>
+    <div class="widget-inner">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a></li></ul>
+    </div>
+  </div>
+
+
+    
+</div>
+
+<div id="backtop"><i class="icon icon-arrow-up"></i></div>
+            </aside>
+            
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="footer-wave">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#3c4859" fill-opacity="1" d="M0,160L60,181.3C120,203,240,245,360,240C480,235,600,181,720,186.7C840,192,960,256,1080,261.3C1200,267,1320,213,1380,186.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
+    </div>
+
+    <!-- Please do not remove this -->
+    <!-- 开源不易，请勿删除 -->
+    <div class="footer-wrap">
+        <div class="footer-inner"> 
+            小汪老师 &copy; 2023<br>
+            Powered By Hexo · Theme By <a href="https://linhong.me/" target="_blank">Aomori</a> · <a href="https://github.com/lh1me/hexo-theme-aomori" target="_blank">Github</a>
+        </div>
+    </div>
+
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@6.0.2/dist/ionicons/ionicons.esm.js"></script>
+
+
+
+
+
+
+<script src="/dist/build.js?1654266144177.js"></script>
+
+
+<script src="/dist/custom.js?1654266144177.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
