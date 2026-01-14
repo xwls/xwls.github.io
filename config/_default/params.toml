@@ -34,6 +34,9 @@ ShowWordCount = false
 # 显示 RSS 图标
 ShowRssButtonInSectionTermList = true
 
+# 显示分页页码（如：1/2, 2/2）
+ShowPageNums = true
+
 # 使用 Hugo 内置目录
 UseHugoToc = true
 
