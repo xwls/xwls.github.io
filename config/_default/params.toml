@@ -5,7 +5,7 @@ env = "production"
 
 # 网站描述
 description = "欢迎来到我的博客，这里记录技术学习与分享"
-author = "Wang"
+# author = "Wang"
 
 # 默认主题：light, dark, auto
 defaultTheme = "auto"
