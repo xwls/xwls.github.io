@@ -1,10 +1,15 @@
-+++
-title = 'CentOS7 安装 Docker CE'
-date = 2022-05-06T13:35:28+08:00
-categories = ['云原生']
-tags = ['运维', 'centos', 'linux', 'docker']
-summary = 'Docker 有两个分支版本：Docker CE 和 Docker EE，即社区版和企业版。本教程基于 CentOS 7 安装 Docker CE。'
-+++
+---
+title: CentOS7 安装 Docker CE
+date: 2022-05-06 13:35:28+08:00
+categories:
+- 云原生
+tags:
+- 运维
+- centos
+- linux
+- docker
+summary: Docker 有两个分支版本：Docker CE 和 Docker EE，即社区版和企业版。本教程基于 CentOS 7 安装 Docker CE。
+---
 
 1. 执行如下命令，安装 Docker 的依赖库。
 

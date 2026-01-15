@@ -1,10 +1,14 @@
-+++
-title = 'RabbitMQ 实现延迟消息'
-date = 2022-07-15T16:02:35+08:00
-categories = ['中间件']
-tags = ['mq', 'rabbitmq', '中间件']
-summary = 'RabbitMQ 实现延迟消息，rabbitmq_delayed_message_exchange 插件。'
-+++
+---
+title: RabbitMQ 实现延迟消息
+date: 2022-07-15 16:02:35+08:00
+categories:
+- 中间件
+tags:
+- mq
+- rabbitmq
+- 中间件
+summary: RabbitMQ 实现延迟消息，rabbitmq_delayed_message_exchange 插件。
+---
 
 ## 下载延时消息插件
 

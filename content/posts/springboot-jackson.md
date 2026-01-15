@@ -1,10 +1,15 @@
-+++
-title = 'SpringBoot中Jackson的简单使用'
-date = 2019-08-12T13:38:42+08:00
-categories = ['Java']
-tags = ['java', 'spring', 'springboot', 'json']
-summary = 'SpringBoot默认使用Jackson作为对象的序列化工具，在进行对象的序列化时，日期时间类型和null值往往需要单独处理。'
-+++
+---
+title: SpringBoot中Jackson的简单使用
+date: 2019-08-12 13:38:42+08:00
+categories:
+- Java
+tags:
+- java
+- spring
+- springboot
+- json
+summary: SpringBoot默认使用Jackson作为对象的序列化工具，在进行对象的序列化时，日期时间类型和null值往往需要单独处理。
+---
 
 ## 统一处理
 

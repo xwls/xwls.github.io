@@ -1,10 +1,13 @@
-+++
-title = 'hyper-v 占用其他软件或服务端口解决方案'
-date = 2022-06-14T15:38:14+08:00
-categories = ['小技巧']
-tags = ['虚拟机', 'windows']
-summary = 'hyper-v 占用其他软件或服务端口解决方案。'
-+++
+---
+title: hyper-v 占用其他软件或服务端口解决方案
+date: 2022-06-14 15:38:14+08:00
+categories:
+- 小技巧
+tags:
+- 虚拟机
+- windows
+summary: hyper-v 占用其他软件或服务端口解决方案。
+---
 
 ## 问题背景
 

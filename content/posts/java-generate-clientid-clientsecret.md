@@ -1,10 +1,15 @@
-+++
-title = '生成 ClientId 与 ClientSecret：从随手一写到性能优化'
-date = 2025-01-14T11:16:00+08:00
-categories = ['Java']
-tags = ['java', 'oauth2', 'security', 'performance']
-summary = '在对接 API 网关或开发 OAuth2 服务时，需要为应用生成唯一的 ClientId 和高强度的 ClientSecret。'
-+++
+---
+title: 生成 ClientId 与 ClientSecret：从随手一写到性能优化
+date: 2025-01-14 11:16:00+08:00
+categories:
+- Java
+tags:
+- java
+- oauth2
+- security
+- performance
+summary: 在对接 API 网关或开发 OAuth2 服务时，需要为应用生成唯一的 ClientId 和高强度的 ClientSecret。
+---
 
 在对接 API 网关（如 Kong、Nginx）或开发 OAuth2 服务时，我们经常需要为应用生成唯一的 `ClientId` 和高强度的 `ClientSecret`。
 

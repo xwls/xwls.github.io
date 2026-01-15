@@ -1,10 +1,13 @@
-+++
-title = 'Linux 源码安装 Nginx'
-date = 2019-08-26T14:21:23+08:00
-categories = ['环境搭建']
-tags = ['linux', 'nginx']
-summary = '在 CentOS7 下以软件源码包的方式安装 Nginx，主要分为：下载、解压缩、配置、编译、安装几个步骤，其他源码包软件的安装方式类似。'
-+++
+---
+title: Linux 源码安装 Nginx
+date: 2019-08-26 14:21:23+08:00
+categories:
+- 环境搭建
+tags:
+- linux
+- nginx
+summary: 在 CentOS7 下以软件源码包的方式安装 Nginx，主要分为：下载、解压缩、配置、编译、安装几个步骤，其他源码包软件的安装方式类似。
+---
 
 ## 安装 nginx 需要的依赖
 

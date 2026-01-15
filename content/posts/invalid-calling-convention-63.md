@@ -1,10 +1,15 @@
-+++
-title = 'Invalid calling convention 63'
-date = 2022-05-06T08:58:21+08:00
-categories = ['Java']
-tags = ['java', 'jna', 'exception']
-summary = '在 Java 中使用 jna 调用本地库的方法时，经常会有回调方法，回调方法在 Linux 和 Windows 中是有区别的，使用不正确会抛出异常：java.lang.IllegalArgumentException: Invalid calling convention 63'
-+++
+---
+title: Invalid calling convention 63
+date: 2022-05-06 08:58:21+08:00
+categories:
+- Java
+tags:
+- java
+- jna
+- exception
+summary: '在 Java 中使用 jna 调用本地库的方法时，经常会有回调方法，回调方法在 Linux 和 Windows 中是有区别的，使用不正确会抛出异常：java.lang.IllegalArgumentException:
+  Invalid calling convention 63'
+---
 
 ## 异常日志
 

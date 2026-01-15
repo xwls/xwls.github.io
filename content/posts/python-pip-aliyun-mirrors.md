@@ -1,10 +1,13 @@
-+++
-title = 'Python 中 pip 设置为阿里镜像源'
-date = 2022-07-01T15:47:42+08:00
-categories = ['Python']
-tags = ['mirror', 'python']
-summary = 'Python 中的 pip 默认源，在国内下载很慢，修改为阿里云的 pip 源提升下载速度。'
-+++
+---
+title: Python 中 pip 设置为阿里镜像源
+date: 2022-07-01 15:47:42+08:00
+categories:
+- Python
+tags:
+- mirror
+- python
+summary: Python 中的 pip 默认源，在国内下载很慢，修改为阿里云的 pip 源提升下载速度。
+---
 
 ## 配置文件
 

@@ -1,10 +1,14 @@
-+++
-title = 'CentOS 安装 MySQL5.7'
-date = 2019-10-22T14:04:37+08:00
-categories = ['运维']
-tags = ['centos', 'linux', 'mysql']
-summary = '记录一下在 CentOS7 中安装 MySQL5.7 版本遇到的一个小问题，顺便记录下安装过程。'
-+++
+---
+title: CentOS 安装 MySQL5.7
+date: 2019-10-22 14:04:37+08:00
+categories:
+- 运维
+tags:
+- centos
+- linux
+- mysql
+summary: 记录一下在 CentOS7 中安装 MySQL5.7 版本遇到的一个小问题，顺便记录下安装过程。
+---
 
 ## 安装 MySQL5.7 的安装源
 

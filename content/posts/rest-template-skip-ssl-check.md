@@ -1,10 +1,16 @@
-+++
-title = 'RestTemplate 跳过 HTTPS 检查'
-date = 2022-04-30T11:43:05+08:00
-categories = ['Java']
-tags = ['java', 'spring', 'springboot', 'https', 'ssl']
-summary = '使用 RestTemplate 请求 https 的接口时，遇到关于证书的错误。'
-+++
+---
+title: RestTemplate 跳过 HTTPS 检查
+date: 2022-04-30 11:43:05+08:00
+categories:
+- Java
+tags:
+- java
+- spring
+- springboot
+- https
+- ssl
+summary: 使用 RestTemplate 请求 https 的接口时，遇到关于证书的错误。
+---
 
 ## 错误日志
 

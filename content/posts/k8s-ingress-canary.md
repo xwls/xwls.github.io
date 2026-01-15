@@ -1,10 +1,14 @@
-+++
-title = 'k8s 通过 Ingress 进行灰度发布'
-date = 2023-02-02T11:03:34+08:00
-categories = ['云原生']
-tags = ['k8s', 'Ingress', '灰度']
-summary = 'k8s 通过 Ingress 通过设置 权重/请求头 进行灰度发布。'
-+++
+---
+title: k8s 通过 Ingress 进行灰度发布
+date: 2023-02-02 11:03:34+08:00
+categories:
+- 云原生
+tags:
+- k8s
+- Ingress
+- 灰度
+summary: k8s 通过 Ingress 通过设置 权重/请求头 进行灰度发布。
+---
 
 ## 部署 Deployment V1 应用
 

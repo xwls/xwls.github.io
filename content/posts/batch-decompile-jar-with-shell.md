@@ -1,10 +1,15 @@
-+++
-title = '使用 Shell 脚本批量反编译 JAR 包：老旧项目逆向工程实战'
-date = 2025-02-10T11:25:00+08:00
-categories = ['Java']
-tags = ['shell', 'java', 'decompile', 'fernflower']
-summary = '接手一个只有 JAR 包没有源码的老旧 Java 项目，面对数百个 JAR 文件，手动反编译不现实。'
-+++
+---
+title: 使用 Shell 脚本批量反编译 JAR 包：老旧项目逆向工程实战
+date: 2025-02-10 11:25:00+08:00
+categories:
+- Java
+tags:
+- shell
+- java
+- decompile
+- fernflower
+summary: 接手一个只有 JAR 包没有源码的老旧 Java 项目，面对数百个 JAR 文件，手动反编译不现实。
+---
 
 ## 背景
 

@@ -1,11 +1,16 @@
-+++
-date = '2026-01-11T14:30:00+08:00'
-draft = false
-title = 'Docker 容器化技术入门与实践'
-summary = '全面介绍 Docker 容器技术，从基础概念到生产实践'
-tags = ['Docker', '容器化', 'DevOps', '微服务']
-categories = ['技术教程']
-+++
+---
+date: '2026-01-11T14:30:00+08:00'
+draft: false
+title: Docker 容器化技术入门与实践
+summary: 全面介绍 Docker 容器技术，从基础概念到生产实践
+tags:
+- Docker
+- 容器化
+- DevOps
+- 微服务
+categories:
+- 技术教程
+---
 
 # Docker 容器化技术入门与实践
 

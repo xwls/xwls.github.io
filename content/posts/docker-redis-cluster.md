@@ -1,10 +1,14 @@
-+++
-title = 'Docker 搭建 Redis 集群'
-date = 2022-10-18T16:15:27+08:00
-categories = ['环境搭建']
-tags = ['redis', 'docker', '集群']
-summary = '使用 docker 创建 redis 集群。'
-+++
+---
+title: Docker 搭建 Redis 集群
+date: 2022-10-18 16:15:27+08:00
+categories:
+- 环境搭建
+tags:
+- redis
+- docker
+- 集群
+summary: 使用 docker 创建 redis 集群。
+---
 
 ## 拉取 redis 镜像
 

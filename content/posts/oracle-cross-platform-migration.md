@@ -1,10 +1,15 @@
-+++
-title = 'Oracle 数据库跨平台迁移全记录：从 Windows 到 Linux'
-date = 2026-01-12T15:52:00+08:00
-categories = ['数据库']
-tags = ['oracle', 'linux', 'windows', '数据迁移']
-summary = '记录一次 Oracle 数据库从 Windows 到 Linux 的跨平台迁移实战，包括 Data Pump 导出导入的完整流程及踩坑解决方案。'
-+++
+---
+title: Oracle 数据库跨平台迁移全记录：从 Windows 到 Linux
+date: 2026-01-12 15:52:00+08:00
+categories:
+- 数据库
+tags:
+- oracle
+- linux
+- windows
+- 数据迁移
+summary: 记录一次 Oracle 数据库从 Windows 到 Linux 的跨平台迁移实战，包括 Data Pump 导出导入的完整流程及踩坑解决方案。
+---
 
 ## 迁移背景
 

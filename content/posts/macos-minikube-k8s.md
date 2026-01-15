@@ -1,10 +1,14 @@
-+++
-title = 'MacOS 使用 minikube 搭建 Kubernetes 环境'
-date = 2022-10-19T16:14:16+08:00
-categories = ['云原生']
-tags = ['k8s', 'docker', 'mac']
-summary = 'MacOS 使用 minikube 搭建 Kubernetes 环境。'
-+++
+---
+title: MacOS 使用 minikube 搭建 Kubernetes 环境
+date: 2022-10-19 16:14:16+08:00
+categories:
+- 云原生
+tags:
+- k8s
+- docker
+- mac
+summary: MacOS 使用 minikube 搭建 Kubernetes 环境。
+---
 
 在 MacOS 下，使用 minikube 搭建 Kubernetes 环境，遇到了大量的问题，包括 [kubelet-check] Initial timeout of 40s passed.、拉取镜像失败、dashboard 启动失败，等等。
 

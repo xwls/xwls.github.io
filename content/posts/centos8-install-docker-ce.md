@@ -1,10 +1,15 @@
-+++
-title = 'CentOS8 安装 Docker CE'
-date = 2022-10-15T09:56:28+08:00
-categories = ['云原生']
-tags = ['运维', 'centos', 'linux', 'docker']
-summary = '本步骤指导您如何在 ECS 实例上部署 Docker。'
-+++
+---
+title: CentOS8 安装 Docker CE
+date: 2022-10-15 09:56:28+08:00
+categories:
+- 云原生
+tags:
+- 运维
+- centos
+- linux
+- docker
+summary: 本步骤指导您如何在 ECS 实例上部署 Docker。
+---
 
 1. 执行如下命令，安装 dnf。dnf 是新一代的 rpm 软件包管理器。
 

@@ -1,10 +1,14 @@
-+++
-title = 'Nginx 配置 http 自动跳转到 https'
-date = 2019-10-22T13:58:42+08:00
-categories = ['运维']
-tags = ['运维', 'https', 'http']
-summary = '前几天在阿里云申请了一个免费的 SSL 证书，给网站配置了 https 访问，顺便配置了 http 自动跳转到 https，在这里记录下配置文件。'
-+++
+---
+title: Nginx 配置 http 自动跳转到 https
+date: 2019-10-22 13:58:42+08:00
+categories:
+- 运维
+tags:
+- 运维
+- https
+- http
+summary: 前几天在阿里云申请了一个免费的 SSL 证书，给网站配置了 https 访问，顺便配置了 http 自动跳转到 https，在这里记录下配置文件。
+---
 
 ![image](https://i.loli.net/2019/09/05/ocQLh8iOMuxWAFN.png)
 

@@ -1,10 +1,13 @@
-+++
-title = 'Ubuntu 安装 Docker CE'
-date = 2022-05-09T15:34:51+08:00
-categories = ['云原生']
-tags = ['ubuntu', 'docker']
-summary = 'Ubuntu 安装 Docker CE。'
-+++
+---
+title: Ubuntu 安装 Docker CE
+date: 2022-05-09 15:34:51+08:00
+categories:
+- 云原生
+tags:
+- ubuntu
+- docker
+summary: Ubuntu 安装 Docker CE。
+---
 
 ```bash
 # step 1: 安装必要的一些系统工具

@@ -1,10 +1,12 @@
-+++
-title = 'Ubuntu 22.04 安装 ceph 集群'
-date = 2023-02-16T10:43:34+08:00
-categories = ['云原生']
-tags = ['k8s']
-summary = '在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。'
-+++
+---
+title: Ubuntu 22.04 安装 ceph 集群
+date: 2023-02-16 10:43:34+08:00
+categories:
+- 云原生
+tags:
+- k8s
+summary: 在 Ubuntu 22.04 使用 cephadm 安装 ceph 集群，并配置为 k8s 的存储类。
+---
 
 ## 准备
 

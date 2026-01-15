@@ -1,10 +1,13 @@
-+++
-title = '修改 Oracle 数据库的字符集'
-date = 2022-08-25T16:09:14+08:00
-categories = ['数据库']
-tags = ['oracle']
-summary = '修改 Oracle 数据库的字符集，项目中遇到的问题，客户的 Oracle 字符集是 ZHS16GBK，我们是 UTF8，需要将 UTF8 修改为 ZHS16GBK。'
-+++
+---
+title: 修改 Oracle 数据库的字符集
+date: 2022-08-25 16:09:14+08:00
+categories:
+- 数据库
+tags:
+- oracle
+summary: 修改 Oracle 数据库的字符集，项目中遇到的问题，客户的 Oracle 字符集是 ZHS16GBK，我们是 UTF8，需要将 UTF8 修改为
+  ZHS16GBK。
+---
 
 库 A 的编码为 gbk，库 B 的编码为 utf-8，两种编码格式下，汉字占的字节数不一样，gbk 为 2 个字节，utf-8 为 3 个字节。所有针对某些情况，需要修改字符集编码。
 

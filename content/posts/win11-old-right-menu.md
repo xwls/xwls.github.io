@@ -1,10 +1,12 @@
-+++
-title = 'Windows11 恢复右键菜单'
-date = 2022-05-09T13:45:13+08:00
-categories = ['小技巧']
-tags = ['windows']
-summary = '刚刚安装的 win11，对新的右键菜单用不习惯（后来慢慢习惯了），此操作可以恢复 windows11 的右键菜单为原始样式。'
-+++
+---
+title: Windows11 恢复右键菜单
+date: 2022-05-09 13:45:13+08:00
+categories:
+- 小技巧
+tags:
+- windows
+summary: 刚刚安装的 win11，对新的右键菜单用不习惯（后来慢慢习惯了），此操作可以恢复 windows11 的右键菜单为原始样式。
+---
 
 ## 打开注册表
 

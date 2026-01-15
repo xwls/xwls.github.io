@@ -1,11 +1,18 @@
-+++
-date = '2026-01-12T09:15:00+08:00'
-draft = false
-title = 'Python 数据处理实战技巧'
-summary = '使用 Pandas、NumPy 等工具进行高效数据处理的完整指南'
-tags = ['Python', 'Pandas', 'NumPy', '数据分析', '数据处理']
-categories = ['技术教程', '数据科学']
-+++
+---
+date: '2026-01-12T09:15:00+08:00'
+draft: false
+title: Python 数据处理实战技巧
+summary: 使用 Pandas、NumPy 等工具进行高效数据处理的完整指南
+tags:
+- Python
+- Pandas
+- NumPy
+- 数据分析
+- 数据处理
+categories:
+- 技术教程
+- 数据科学
+---
 
 # Python 数据处理实战技巧
 

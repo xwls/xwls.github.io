@@ -1,10 +1,18 @@
-+++
-title = 'Oracle 26ai 文本与图片向量存储与查询'
-date = 2025-11-17T15:24:00+08:00
-categories = ['Java', 'Oracle', 'AI']
-tags = ['oracle', 'langchain4j', 'vector-database', 'embedding', 'dashscope']
-summary = 'Oracle 26ai、 LangChain4j 框架结合阿里魔搭平台的向量化模型，实现文本和图片的向量存储与相似性查询。'
-+++
+---
+title: Oracle 26ai 文本与图片向量存储与查询
+date: 2025-11-17 15:24:00+08:00
+categories:
+- Java
+- Oracle
+- AI
+tags:
+- oracle
+- langchain4j
+- vector-database
+- embedding
+- dashscope
+summary: Oracle 26ai、 LangChain4j 框架结合阿里魔搭平台的向量化模型，实现文本和图片的向量存储与相似性查询。
+---
 
 Oracle Database 26ai 版本引入了强大的向量存储和查询功能，为 AI 应用提供了原生的向量数据库支持。本文将介绍如何使用 LangChain4j 框架结合阿里魔搭平台的向量化模型，实现文本和图片的向量存储与相似性查询。
 

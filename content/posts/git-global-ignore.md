@@ -1,10 +1,12 @@
-+++
-title = 'Git 全局忽略 .DS_Store 文件'
-date = 2022-08-29T16:29:36+08:00
-categories = ['小技巧']
-tags = ['git']
-summary = 'Git 全局忽略指定文件，以 MacOS 的 .DS_Store 文件为例。'
-+++
+---
+title: Git 全局忽略 .DS_Store 文件
+date: 2022-08-29 16:29:36+08:00
+categories:
+- 小技巧
+tags:
+- git
+summary: Git 全局忽略指定文件，以 MacOS 的 .DS_Store 文件为例。
+---
 
 ## .DS_Store 文件
 

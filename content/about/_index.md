@@ -1,8 +1,8 @@
-+++
-title = 'About'
-date = 2024-01-01T00:00:00+08:00
-layout = 'simple'
-+++
+---
+title: "About"
+date: "2024-01-01T00:00:00+08:00"
+layout: "simple"
+---
 
 欢迎来到我的博客！
 

@@ -1,10 +1,13 @@
-+++
-title = 'Python 从 CSV 下载文件'
-date = 2022-07-02T15:56:31+08:00
-categories = ['Python']
-tags = ['util', 'python']
-summary = '使用 python 读取 csv 文件，解析文件内的 url 并下载到本地。'
-+++
+---
+title: Python 从 CSV 下载文件
+date: 2022-07-02 15:56:31+08:00
+categories:
+- Python
+tags:
+- util
+- python
+summary: 使用 python 读取 csv 文件，解析文件内的 url 并下载到本地。
+---
 
 ## CSV 文件
 

@@ -1,10 +1,14 @@
-+++
-title = 'Windows 下安装 MySQL5.7.28 压缩版'
-date = 2019-10-24T13:50:15+08:00
-categories = ['环境搭建']
-tags = ['windows', 'mysql']
-summary = '关于 MySQL，之前大部分都是在 Linux 下安装使用，在 Windows 下也用过，但用的都是安装版，这里记录一下 Windows 下 MySQL 压缩版的安装和配置过程。'
-+++
+---
+title: Windows 下安装 MySQL5.7.28 压缩版
+date: 2019-10-24 13:50:15+08:00
+categories:
+- 环境搭建
+tags:
+- windows
+- mysql
+summary: 关于 MySQL，之前大部分都是在 Linux 下安装使用，在 Windows 下也用过，但用的都是安装版，这里记录一下 Windows 下 MySQL
+  压缩版的安装和配置过程。
+---
 
 ## 下载
 

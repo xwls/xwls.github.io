@@ -1,11 +1,15 @@
-+++
-date = '2026-01-10T10:00:00+08:00'
-draft = false
-title = 'Git 版本控制完全指南'
-summary = '从入门到精通的 Git 使用教程，涵盖基础命令到高级技巧'
-tags = ['Git', '版本控制', '开发工具']
-categories = ['技术教程']
-+++
+---
+date: '2026-01-10T10:00:00+08:00'
+draft: false
+title: Git 版本控制完全指南
+summary: 从入门到精通的 Git 使用教程，涵盖基础命令到高级技巧
+tags:
+- Git
+- 版本控制
+- 开发工具
+categories:
+- 技术教程
+---
 
 # Git 版本控制完全指南
 

@@ -1,10 +1,15 @@
-+++
-title = 'SpringBoot 整合 Shiro 实现认证和授权'
-date = 2019-12-27T13:47:04+08:00
-categories = ['Java']
-tags = ['java', 'spring', 'springboot', 'shiro']
-summary = 'Shiro 是 Apache 软件基金会下有名的安全框架，本文记录在 SpringBoot 中如何使用 Shiro 实现用户认证及授权。'
-+++
+---
+title: SpringBoot 整合 Shiro 实现认证和授权
+date: 2019-12-27 13:47:04+08:00
+categories:
+- Java
+tags:
+- java
+- spring
+- springboot
+- shiro
+summary: Shiro 是 Apache 软件基金会下有名的安全框架，本文记录在 SpringBoot 中如何使用 Shiro 实现用户认证及授权。
+---
 
 ## 用户认证和授权
 

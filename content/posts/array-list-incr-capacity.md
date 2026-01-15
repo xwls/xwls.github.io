@@ -1,10 +1,13 @@
-+++
-title = 'ArrayList 扩容规则'
-date = 2022-10-15T15:28:59+08:00
-categories = ['Java']
-tags = ['源码', '算法']
-summary = 'Java 中的常用集合类 ArrayList 的扩容规则。'
-+++
+---
+title: ArrayList 扩容规则
+date: 2022-10-15 15:28:59+08:00
+categories:
+- Java
+tags:
+- 源码
+- 算法
+summary: Java 中的常用集合类 ArrayList 的扩容规则。
+---
 
 ## 验证程序
 

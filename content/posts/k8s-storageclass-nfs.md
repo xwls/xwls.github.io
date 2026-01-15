@@ -1,10 +1,12 @@
-+++
-title = 'k8s 存储类 nfs 网络存储'
-date = 2023-02-02T08:46:39+08:00
-categories = ['云原生']
-tags = ['k8s']
-summary = '将 nfs 网络存储设置为 k8s 的默认存储类。'
-+++
+---
+title: k8s 存储类 nfs 网络存储
+date: 2023-02-02 08:46:39+08:00
+categories:
+- 云原生
+tags:
+- k8s
+summary: 将 nfs 网络存储设置为 k8s 的默认存储类。
+---
 
 ## 环境
 

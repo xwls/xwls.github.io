@@ -1,10 +1,12 @@
-+++
-title = 'Oracle 表空间'
-date = 2022-08-25T16:06:59+08:00
-categories = ['数据库']
-tags = ['oracle']
-summary = 'Oracle 数据库的表空间操作，包括：创建、修改、删除、查询。'
-+++
+---
+title: Oracle 表空间
+date: 2022-08-25 16:06:59+08:00
+categories:
+- 数据库
+tags:
+- oracle
+summary: Oracle 数据库的表空间操作，包括：创建、修改、删除、查询。
+---
 
 ## 创建
 

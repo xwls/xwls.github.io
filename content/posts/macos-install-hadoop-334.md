@@ -1,10 +1,15 @@
-+++
-title = 'MacOS 安装 Hadoop 3.3.4'
-date = 2022-10-15T14:17:04+08:00
-categories = ['大数据']
-tags = ['环境搭建', '大数据', 'Hadoop', 'Mac']
-summary = 'MacOS 12.6 安装 Hadoop 3.3.4 单机版。'
-+++
+---
+title: MacOS 安装 Hadoop 3.3.4
+date: 2022-10-15 14:17:04+08:00
+categories:
+- 大数据
+tags:
+- 环境搭建
+- 大数据
+- Hadoop
+- Mac
+summary: MacOS 12.6 安装 Hadoop 3.3.4 单机版。
+---
 
 ## 下载
 

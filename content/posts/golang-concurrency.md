@@ -1,10 +1,12 @@
-+++
-title = 'Golang 并发编程示例'
-date = 2022-06-28T15:44:40+08:00
-categories = ['Golang']
-tags = ['go']
-summary = 'golang 并发编程的几个小例子。'
-+++
+---
+title: Golang 并发编程示例
+date: 2022-06-28 15:44:40+08:00
+categories:
+- Golang
+tags:
+- go
+summary: golang 并发编程的几个小例子。
+---
 
 ## Goroutines
 

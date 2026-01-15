@@ -1,10 +1,15 @@
-+++
-title = 'MyBatis 调用数据库存储过程'
-date = 2022-10-17T14:19:13+08:00
-categories = ['Java']
-tags = ['java', '数据库', '存储过程', 'mybatis']
-summary = '使用 MyBatis 调用数据库的存储过程。'
-+++
+---
+title: MyBatis 调用数据库存储过程
+date: 2022-10-17 14:19:13+08:00
+categories:
+- Java
+tags:
+- java
+- 数据库
+- 存储过程
+- mybatis
+summary: 使用 MyBatis 调用数据库的存储过程。
+---
 
 项目中有个需求：调用数据库中已有的存储过程实现用户登录业务，此存储过程接收 3 个参数，两个入参：username/password，一个出参：result，登录成功 result 为 1，失败为 0。
 
