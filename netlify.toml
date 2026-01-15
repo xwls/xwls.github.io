@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  command = "hugo --gc --minify --baseURL "https://${NETLIFY_PROJECT_PRODUCTION_URL}""
+  command = "hugo --gc --minify --baseURL "https://${NETLIFY_PROJECT_PRODUCTION_URL}"
 
 [build.environment]
   HUGO_VERSION = "0.154.5"
