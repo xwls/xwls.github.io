@@ -47,3 +47,6 @@ outputs:
   - HTML
   - RSS
   - JSON
+
+permalinks:
+  tags: '/tags/:slug/'
