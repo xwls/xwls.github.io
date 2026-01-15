@@ -1,0 +1,8 @@
+zh-Hans:
+  languageCode: zh-Hans
+  languageName: 简体中文
+  weight: 1
+  contentDir: content
+  params:
+    # author: "WZW"
+    description: 记录技术学习与分享

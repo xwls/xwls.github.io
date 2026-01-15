@@ -1,0 +1,49 @@
+baseURL: https://xwls.github.io/
+title: Wang's Blog
+languageCode: zh-Hans
+defaultContentLanguage: zh-Hans
+defaultContentLanguageInSubdir: false
+timeZone: Asia/Shanghai
+
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+# PaperMod 主题配置
+enableEmoji: true
+enableInlineShortcodes: true
+
+pagination:
+  pagerSize: 10
+
+minify:
+  disableXML: true
+  minifyOutput: true
+
+frontmatter:
+  # 自动日期填充配置
+  date:
+  - date
+  - :fileModTime
+  lastmod:
+  - lastmod
+  - :fileModTime
+
+privacy:
+  vimeo:
+    enableDNT: true
+  x:
+    enableDNT: true
+  youTube:
+    privacyEnhanced: true
+
+taxonomies:
+  category: categories
+  tag: tags
+
+outputs:
+  home:
+  - HTML
+  - RSS
+  - JSON
