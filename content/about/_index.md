@@ -8,31 +8,33 @@ layout: "simple"
 
 我是一名软件开发工程师，热衷于技术学习与分享。这个博客记录了我在工作和学习中积累的技术经验和心得。
 
-```javascript
+```json
 {
-  name: 'xwls'
-  age: 29,
-  gender: '男',
-  profession: '后端开发',
-  experience: '7年',
-  address: '山东省临沂市',
-  github: 'https://github.com/xwls',
-  blog: [
-    'https://xwls.github.io',
-    'https://xwls.netlify.app'
+  "name": "xwls",
+  "gender": "男",
+  "profession": "后端开发工程师",
+  "experience": "11年",
+  "location": "山东省临沂市",
+  "contact": {
+    "email": "zengwei@linux.do",
+    "github": "https://github.com/xwls"
+  },
+  "blogs": [
+    "https://xwls.github.io",
+    "https://xwls.netlify.app",
+    "https://xwls.vercel.app"
   ],
-  email: 'zengwei@linux.do',
-  skills: [
-    ['Html', 'Javascript', 'jQuery', 'CSS', 'ES6', 'Node'],
-    ['Java', 'Golang'],
-    ['Maven','Gradle'],
-    ['Git', 'SVN'],
-    ['Vue'],
-    ['Spring', 'SpringBoot', 'Mybatis', 'Hibernate', 'jpa'],
-    ['Beego', 'go-zero', 'gorm', 'xorm'],
-    ['Oracle', 'MySql', 'Mongo', 'Redis'],
-    ['Dubbo', 'SpringCloud', 'Docker', 'Kubernetes']
-  ]
+  "skills": {
+    "frontend": ["HTML", "CSS", "JavaScript", "ES6", "jQuery", "Vue", "Node.js"],
+    "backend": ["Java", "Golang"],
+    "frameworks": {
+      "java": ["Spring", "SpringBoot", "MyBatis", "Hibernate", "JPA"],
+      "golang": ["Beego", "go-zero", "GORM", "XORM"]
+    },
+    "databases": ["Oracle", "MySQL", "MongoDB", "Redis"],
+    "devops": ["Docker", "Kubernetes", "Dubbo", "SpringCloud"],
+    "tools": ["Git", "SVN", "Maven", "Gradle"]
+  }
 }
 ```
 
