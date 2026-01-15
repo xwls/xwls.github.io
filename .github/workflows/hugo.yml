@@ -52,6 +52,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.23'
+          cache: false
+          cache-dependency-path: ""
 
       - name: Setup Pages
         id: pages
