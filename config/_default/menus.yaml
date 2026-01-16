@@ -1,25 +1,19 @@
-# -- 主菜单 --
-# PaperMod 主题菜单配置
+# -- Congo 主题菜单配置 --
 
 main:
 - name: 首页
-  url: /
+  pageRef: /
   weight: 1
 - name: 博客
-  url: /posts/
+  pageRef: posts
   weight: 10
-- name: 归档
-  url: /archives/
-  weight: 15
 - name: 分类
-  url: /categories/
+  pageRef: categories
   weight: 20
 - name: 标签
-  url: /tags/
+  pageRef: tags
   weight: 30
 - name: 关于
-  url: /about/
+  pageRef: about
   weight: 40
-- name: 搜索
-  url: /search/
-  weight: 50
+

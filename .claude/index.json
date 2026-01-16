@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "timestamp": "2026-01-16T09:39:38+08:00",
+    "version": "1.0.0",
+    "projectName": "xwls.github.io",
+    "projectType": "hugo-static-site"
+  },
+  "scan": {
+    "totalFilesEstimated": 58,
+    "filesScanned": 52,
+    "coveragePercent": 89.7,
+    "truncated": false,
+    "lastScanDate": "2026-01-16T09:39:38+08:00"
+  },
+  "modules": [
+    {
+      "path": "config/_default",
+      "type": "configuration",
+      "language": "yaml",
+      "entryFile": "hugo.yaml",
+      "hasTests": false,
+      "hasConfig": true,
+      "claudeMd": "config/_default/CLAUDE.md",
+      "keyFiles": [
+        "hugo.yaml",
+        "params.yaml",
+        "menus.yaml",
+        "languages.yaml",
+        "module.yaml",
+        "markup.yaml"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      }
+    },
+    {
+      "path": "content",
+      "type": "content",
+      "language": "markdown",
+      "entryFile": "posts/",
+      "hasTests": false,
+      "hasConfig": false,
+      "claudeMd": "content/CLAUDE.md",
+      "keyFiles": [
+        "posts/",
+        "about/_index.md",
+        "archives.md",
+        "search.md"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      },
+      "stats": {
+        "postCount": 42
+      }
+    },
+    {
+      "path": "layouts",
+      "type": "template",
+      "language": "html",
+      "entryFile": "partials/extend_head.html",
+      "hasTests": false,
+      "hasConfig": false,
+      "claudeMd": null,
+      "keyFiles": [
+        "partials/extend_head.html"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      }
+    },
+    {
+      "path": "static",
+      "type": "assets",
+      "language": null,
+      "entryFile": null,
+      "hasTests": false,
+      "hasConfig": false,
+      "claudeMd": null,
+      "keyFiles": [
+        "favicon.svg"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      }
+    },
+    {
+      "path": "i18n",
+      "type": "i18n",
+      "language": "yaml",
+      "entryFile": "zh-Hans.yaml",
+      "hasTests": false,
+      "hasConfig": false,
+      "claudeMd": null,
+      "keyFiles": [
+        "zh-Hans.yaml"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "type": "ci-cd",
+      "language": "yaml",
+      "entryFile": "hugo.yml",
+      "hasTests": false,
+      "hasConfig": false,
+      "claudeMd": null,
+      "keyFiles": [
+        "hugo.yml"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      }
+    }
+  ],
+  "rootFiles": {
+    "configuration": [
+      "go.mod",
+      "go.sum",
+      "netlify.toml",
+      "vercel.json",
+      ".gitignore"
+    ],
+    "scripts": [
+      "build.sh"
+    ],
+    "documentation": [
+      "CLAUDE.md"
+    ]
+  },
+  "ignored": {
+    "directories": [
+      ".git",
+      "public",
+      "themes",
+      "resources/_gen"
+    ],
+    "reason": "Git 内部文件、构建输出、主题缓存"
+  },
+  "deployment": {
+    "platforms": [
+      {
+        "name": "GitHub Pages",
+        "config": ".github/workflows/hugo.yml",
+        "url": "https://xwls.github.io"
+      },
+      {
+        "name": "Netlify",
+        "config": "netlify.toml",
+        "url": "https://xwls.netlify.app"
+      },
+      {
+        "name": "Vercel",
+        "config": "vercel.json",
+        "url": "https://xwls.vercel.app"
+      }
+    ]
+  },
+  "theme": {
+    "name": "PaperMod",
+    "source": "github.com/adityatelange/hugo-PaperMod",
+    "version": "v0.0.0-20260109161122-6c5a8f6b055c",
+    "managedBy": "Hugo Modules"
+  },
+  "gaps": [],
+  "recommendations": []
+}

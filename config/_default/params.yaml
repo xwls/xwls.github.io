@@ -1,107 +1,72 @@
-# -- PaperMod 主题配置 --
-# 参考文档: https://github.com/adityatelange/hugo-PaperMod/wiki
+# -- Congo 主题配置 --
+# 参考文档: https://jpanther.github.io/congo/docs/
 
-env: production
+# 主页布局: page, profile, hero, card, background, custom
+defaultAppearance: light
+autoSwitchAppearance: true
 
-# 网站描述
-description: 欢迎来到我的博客，这里记录技术学习与分享
-# author: "Wang"
+# 主页布局
+homepage:
+  layout: page
+  showRecent: true
+  recentLimit: 5
 
-# 默认主题：light, dark, auto
-defaultTheme: auto
+# 文章配置
+article:
+  showDate: true
+  showDateUpdated: true
+  showAuthor: false
+  showBreadcrumbs: true
+  showDraftLabel: true
+  showEdit: true
+  editURL: "https://github.com/xwls/xwls.github.io/blob/main/content"
+  editAppendPath: true
+  showHeadingAnchors: true
+  showPagination: true
+  showReadingTime: true
+  showTableOfContents: true
+  showTaxonomies: true
+  showWordCount: true
+  showComments: false
+  sharingLinks: []
 
-# 禁用主题切换
-disableThemeToggle: false
+# 列表配置
+list:
+  showBreadcrumbs: true
+  showTableOfContents: true
+  showSummary: true
+  groupByYear: true
 
-# 显示阅读时间
-ShowReadingTime: true
+# 站点地图配置
+sitemap:
+  excludedKinds: []
 
-# 显示分享按钮
-ShowShareButtons: false
+# 分类配置
+taxonomy:
+  showTermCount: true
 
-# 显示文章导航（上一篇/下一篇）
-ShowPostNavLinks: true
+# 页头配置
+header:
+  layout: hybrid
+  showTitle: true
 
-# 显示面包屑导航
-ShowBreadCrumbs: true
+# 页脚配置
+footer:
+  showCopyright: true
+  showThemeAttribution: true
+  showAppearanceSwitcher: true
+  showScrollToTop: true
 
-# 显示代码复制按钮
-ShowCodeCopyButtons: true
+# 作者信息
+author:
+  name: "Wang"
+  headline: "这里记录技术学习与分享"
+  links:
+    - github: https://github.com/xwls
 
-# 显示字数统计
-ShowWordCount: true
+# 颜色主题: congo, avocado, cherry, fire, ocean, slate 等
+colorScheme: congo
 
-# 显示 RSS 图标
-ShowRssButtonInSectionTermList: true
+# 全局搜索
+enableSearch: true
 
-# 显示分页页码（如：1/2, 2/2）
-ShowPageNums: true
-
-# 使用 Hugo 内置目录
-UseHugoToc: true
-
-# 显示目录
-disableSpecial1stPost: false
-
-# 禁用滚动到顶部按钮
-disableScrollToTop: false
-
-# 禁用评论
-comments: false
-
-# 隐藏 meta 信息
-hidemeta: false
-
-# 隐藏摘要
-hideSummary: false
-
-# 显示目录
-showtoc: true
-
-# 默认展开目录
-tocopen: false
-
-# 主页信息模式
-homeInfoParams:
-  Title: Wang's Blog
-  Content: 欢迎来到我的博客，这里记录技术学习与分享
-
-# 社交图标
-socialIcons:
-- name: github
-  url: https://github.com/xwls
-
-# 搜索配置
-fuseOpts:
-  isCaseSensitive: false
-  shouldSort: true
-  location: 0
-  distance: 1000
-  threshold: 0.4
-  minMatchCharLength: 0
-  keys:
-  - title
-  - permalink
-  - summary
-  - content
-
-# 封面图片配置
-cover:
-  hidden: false
-  hiddenInList: false
-  hiddenInSingle: false
-
-# 编辑链接配置
-editPost:
-  URL: https://github.com/xwls/xwls.github.io/blob/main/content
-  # Text: "编辑"
-  appendFilePath: true
-
-# 资源配置
-assets:
-  disableHLJS: true
-  disableFingerprinting: false
-
-# 标签配置
-label:
-  text: Wang's Blog
