@@ -1,0 +1,83 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #0078d7;       /* Windows Blue */
+            --accent-color: #f25022;        /* Microsoft Red/Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #42a5f5;
+                --accent-color: #ff7043;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M620,420 Q520,520 320,500 Q120,480 150,290 Q180,100 420,130 Q660,160 620,420 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Right -->
+    <g transform="translate(700, 60)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Windows 11 Context Menu -->
+    <g transform="translate(200, 150)">
+        <!-- Desktop Background -->
+        <rect x="0" y="0" width="300" height="200" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+        
+        <!-- Context Menu (Old Style) -->
+        <g transform="translate(100, 50)">
+            <rect x="0" y="0" width="120" height="140" rx="3" class="surface-fill surface-stroke" stroke-width="2" filter="drop-shadow(2px 4px 6px rgba(0,0,0,0.2))"/>
+            
+            <!-- Menu Items -->
+            <g transform="translate(10, 20)">
+                <rect x="0" y="0" width="80" height="8" rx="2" class="secondary-fill"/>
+                <rect x="0" y="15" width="60" height="8" rx="2" class="secondary-fill"/>
+                <rect x="0" y="30" width="90" height="8" rx="2" class="secondary-fill"/>
+                <line x1="0" y1="45" x2="100" y2="45" class="secondary-stroke" stroke-width="1"/>
+                <rect x="0" y="55" width="70" height="8" rx="2" class="secondary-fill"/>
+                <rect x="0" y="70" width="50" height="8" rx="2" class="secondary-fill"/>
+            </g>
+        </g>
+
+        <!-- Cursor -->
+        <g transform="translate(180, 160)">
+            <path d="M0,0 L0,20 L5,15 L12,22 L15,19 L8,12 L15,12 Z" class="ink-fill" stroke="#fff" stroke-width="1"/>
+        </g>
+        
+        <!-- Registry Key Icon -->
+        <g transform="translate(50, 150)">
+            <path d="M0,10 L10,0 L30,0 L40,10 L40,30 L30,40 L10,40 L0,30 Z" class="accent-fill"/>
+            <text x="12" y="28" font-family="monospace" font-size="18" class="surface-fill" font-weight="bold">R</text>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Left -->
+    <g transform="translate(50, 500)">
+        <path d="M0,0 L20,20 L40,0" fill="none" class="ink-stroke" stroke-width="3" opacity="0.5"/>
+        <path d="M0,20 L20,40 L40,20" fill="none" class="ink-stroke" stroke-width="3" opacity="0.3"/>
+    </g>
+</svg>

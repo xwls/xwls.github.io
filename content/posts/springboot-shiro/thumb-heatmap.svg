@@ -1,0 +1,72 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #6db33f;       /* Spring Green */
+            --accent-color: #e0e0e0;        /* Shield Silver */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #81c784;
+                --accent-color: #757575;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <path d="M0,0 L20,0 L10,20 Z" class="primary-fill" opacity="0.6"/>
+        <path d="M20,0 L40,0 L30,20 Z" class="primary-fill" opacity="0.4"/>
+    </g>
+
+    <!-- Main Illustration: Security Shield -->
+    <g transform="translate(250, 150)">
+        <!-- Shield -->
+        <path d="M150,0 Q250,0 280,80 Q300,200 150,300 Q0,200 20,80 Q50,0 150,0 Z" class="surface-fill surface-stroke" stroke-width="4"/>
+        
+        <!-- Inner Shield Design -->
+        <path d="M150,20 Q230,20 255,85 Q270,180 150,270 Q30,180 45,85 Q70,20 150,20 Z" class="primary-fill" opacity="0.2"/>
+        
+        <!-- Lock Icon -->
+        <g transform="translate(110, 80)">
+            <rect x="10" y="50" width="60" height="50" rx="5" class="ink-fill"/>
+            <path d="M20,50 L20,30 Q20,10 40,10 Q60,10 60,30 L60,50" fill="none" class="ink-stroke" stroke-width="6"/>
+            <circle cx="40" cy="75" r="5" fill="#fff"/>
+        </g>
+        
+        <!-- Checkmark (Verified) -->
+        <g transform="translate(200, 200)">
+            <circle cx="20" cy="20" r="25" class="surface-fill surface-stroke" stroke-width="2"/>
+            <path d="M10,20 L20,30 L35,10" fill="none" class="primary-stroke" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <rect x="0" y="0" width="10" height="30" class="secondary-fill"/>
+        <rect x="15" y="10" width="10" height="20" class="secondary-fill"/>
+        <rect x="30" y="5" width="10" height="25" class="secondary-fill"/>
+    </g>
+</svg>

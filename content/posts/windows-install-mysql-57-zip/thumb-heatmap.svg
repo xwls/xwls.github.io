@@ -1,0 +1,81 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #00758f;       /* MySQL Blue */
+            --accent-color: #f29111;        /* MySQL Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #4db6ac;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Windows Installer -->
+    <g transform="translate(200, 180)">
+        <!-- Windows Window -->
+        <g transform="translate(0, 0)">
+            <rect x="0" y="0" width="400" height="250" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <line x1="0" y1="30" x2="400" y2="30" class="surface-stroke" stroke-width="2"/>
+            
+            <!-- Window Controls -->
+            <circle cx="380" cy="15" r="5" class="secondary-fill"/>
+            <circle cx="360" cy="15" r="5" class="secondary-fill"/>
+            <circle cx="340" cy="15" r="5" class="secondary-fill"/>
+            
+            <!-- Installer Content -->
+            <g transform="translate(40, 60)">
+                <text x="0" y="20" font-family="sans-serif" font-weight="bold" class="ink-fill">MySQL Installer</text>
+                
+                <!-- Progress Bar -->
+                <rect x="0" y="50" width="320" height="20" rx="10" class="secondary-fill"/>
+                <rect x="0" y="50" width="200" height="20" rx="10" class="primary-fill"/>
+                
+                <!-- Zip File Icon -->
+                <g transform="translate(130, 100)">
+                    <rect x="0" y="0" width="60" height="80" rx="5" class="accent-fill" opacity="0.2"/>
+                    <path d="M30,20 L30,60 M15,40 L30,60 L45,40" class="ink-stroke" stroke-width="3"/>
+                    <text x="15" y="75" font-family="monospace" font-size="12" class="ink-fill">.zip</text>
+                </g>
+            </g>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>

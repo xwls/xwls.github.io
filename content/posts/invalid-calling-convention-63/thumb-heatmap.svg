@@ -1,0 +1,86 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #f44336;       /* Error Red */
+            --accent-color: #ff9800;        /* Warning Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ef5350;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <path d="M0,0 L20,0 L10,20 Z" class="primary-fill" opacity="0.6"/>
+        <path d="M20,0 L40,0 L30,20 Z" class="primary-fill" opacity="0.4"/>
+    </g>
+
+    <!-- Main Illustration: Invalid Calling Convention -->
+    <g transform="translate(200, 180)">
+        <!-- Java Code Block -->
+        <g transform="translate(0, 50)">
+            <rect x="0" y="0" width="120" height="140" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="30" y="30" font-family="monospace" class="ink-fill">Java</text>
+            <text x="20" y="60" font-family="monospace" font-size="12" class="ink-fill">JNA</text>
+            <line x1="20" y1="80" x2="100" y2="80" class="secondary-stroke" stroke-width="2"/>
+            <line x1="20" y1="100" x2="80" y2="100" class="secondary-stroke" stroke-width="2"/>
+        </g>
+
+        <!-- Native Library Block -->
+        <g transform="translate(250, 50)">
+            <rect x="0" y="0" width="120" height="140" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="30" y="30" font-family="monospace" class="ink-fill">Native</text>
+            <text x="20" y="60" font-family="monospace" font-size="12" class="ink-fill">DLL/SO</text>
+            <line x1="20" y1="80" x2="100" y2="80" class="secondary-stroke" stroke-width="2"/>
+            <line x1="20" y1="100" x2="80" y2="100" class="secondary-stroke" stroke-width="2"/>
+        </g>
+
+        <!-- Connection (Broken) -->
+        <g transform="translate(120, 100)">
+            <path d="M0,20 L60,20" class="ink-stroke" stroke-width="3" stroke-dasharray="4,2"/>
+            <path d="M70,20 L130,20" class="ink-stroke" stroke-width="3" stroke-dasharray="4,2"/>
+            
+            <!-- Error Symbol -->
+            <g transform="translate(65, 20)">
+                <circle cx="0" cy="0" r="15" class="primary-fill"/>
+                <path d="M-5,-5 L5,5 M5,-5 L-5,5" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            </g>
+        </g>
+        
+        <!-- Error Code -->
+        <text x="185" y="160" font-family="monospace" font-weight="bold" class="primary-fill" text-anchor="middle">Error: 63</text>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <rect x="0" y="0" width="10" height="30" class="secondary-fill"/>
+        <rect x="15" y="10" width="10" height="20" class="secondary-fill"/>
+        <rect x="30" y="5" width="10" height="25" class="secondary-fill"/>
+    </g>
+</svg>

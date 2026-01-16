@@ -1,0 +1,87 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #4caf50;       /* Shell Green */
+            --accent-color: #ff9800;        /* Java Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #81c784;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: JAR Decompilation -->
+    <g transform="translate(200, 180)">
+        <!-- JAR File -->
+        <g transform="translate(0, 50)">
+            <path d="M10,0 L70,0 L80,10 L80,90 L70,100 L10,100 L0,90 L0,10 Z" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="25" y="55" font-family="monospace" font-size="14" class="ink-fill">JAR</text>
+            <path d="M0,10 L80,10" class="surface-stroke" stroke-width="2"/>
+            <path d="M0,90 L80,90" class="surface-stroke" stroke-width="2"/>
+        </g>
+
+        <!-- Process Arrow -->
+        <g transform="translate(100, 90)">
+            <path d="M0,0 L60,0" class="ink-stroke" stroke-width="3" marker-end="url(#arrow)"/>
+            <polygon points="60,-5 70,0 60,5" class="ink-fill"/>
+            
+            <!-- Gear/Script Icon -->
+            <circle cx="35" cy="0" r="15" class="primary-fill"/>
+            <path d="M25,0 L45,0 M35,-10 L35,10" stroke="#fff" stroke-width="2"/>
+        </g>
+
+        <!-- Source Code -->
+        <g transform="translate(200, 20)">
+            <rect x="0" y="0" width="100" height="120" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="10" y="25" font-family="monospace" font-size="12" class="ink-fill">.java</text>
+            
+            <!-- Code Lines -->
+            <line x1="10" y1="40" x2="90" y2="40" class="secondary-stroke" stroke-width="2"/>
+            <line x1="10" y1="55" x2="70" y2="55" class="secondary-stroke" stroke-width="2"/>
+            <line x1="10" y1="70" x2="80" y2="70" class="secondary-stroke" stroke-width="2"/>
+            <line x1="10" y1="85" x2="60" y2="85" class="secondary-stroke" stroke-width="2"/>
+            
+            <!-- Java Logo Color Accent -->
+            <path d="M70,90 Q80,110 90,90" fill="none" class="accent-fill" stroke="var(--accent-color)" stroke-width="3"/>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>

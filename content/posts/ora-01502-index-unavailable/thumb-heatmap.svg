@@ -1,0 +1,85 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #f80000;       /* Oracle Red */
+            --accent-color: #f0ad4e;        /* Warning Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ff5252;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M620,420 Q520,520 320,500 Q120,480 150,290 Q180,100 420,130 Q660,160 620,420 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Right -->
+    <g transform="translate(700, 60)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Index Unavailable -->
+    <g transform="translate(200, 180)">
+        <!-- Database Table -->
+        <g transform="translate(0, 50)">
+            <rect x="0" y="0" width="120" height="100" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <line x1="0" y1="25" x2="120" y2="25" class="surface-stroke" stroke-width="2"/>
+            <line x1="0" y1="50" x2="120" y2="50" class="surface-stroke" stroke-width="2"/>
+            <line x1="0" y1="75" x2="120" y2="75" class="surface-stroke" stroke-width="2"/>
+            <line x1="40" y1="0" x2="40" y2="100" class="surface-stroke" stroke-width="2"/>
+            <line x1="80" y1="0" x2="80" y2="100" class="surface-stroke" stroke-width="2"/>
+        </g>
+
+        <!-- Index Structure (Broken) -->
+        <g transform="translate(160, 20)">
+            <!-- Root Node -->
+            <rect x="60" y="0" width="40" height="30" rx="3" class="secondary-fill"/>
+            
+            <!-- Leaf Nodes -->
+            <rect x="0" y="80" width="40" height="30" rx="3" class="secondary-fill"/>
+            <rect x="60" y="80" width="40" height="30" rx="3" class="secondary-fill"/>
+            <rect x="120" y="80" width="40" height="30" rx="3" class="secondary-fill"/>
+            
+            <!-- Connections (Broken) -->
+            <line x1="80" y1="30" x2="20" y2="80" class="ink-stroke" stroke-width="2" stroke-dasharray="4,2"/>
+            <line x1="80" y1="30" x2="80" y2="80" class="ink-stroke" stroke-width="2" stroke-dasharray="4,2"/>
+            
+            <!-- Error Symbol -->
+            <g transform="translate(100, 50)">
+                <circle cx="0" cy="0" r="15" class="primary-fill"/>
+                <path d="M-5,-5 L5,5 M5,-5 L-5,5" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            </g>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Left -->
+    <g transform="translate(50, 500)">
+        <path d="M0,0 L20,20 L40,0" fill="none" class="ink-stroke" stroke-width="3" opacity="0.5"/>
+        <path d="M0,20 L20,40 L40,20" fill="none" class="ink-stroke" stroke-width="3" opacity="0.3"/>
+    </g>
+</svg>

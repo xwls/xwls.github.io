@@ -1,0 +1,89 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #326ce5;       /* K8s Blue */
+            --accent-color: #f89820;        /* Storage Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #5c94ff;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M650,450 Q550,550 350,520 Q150,490 180,300 Q210,110 450,140 Q690,170 650,450 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: NFS Storage Class -->
+    <g transform="translate(200, 180)">
+        <!-- K8s Cluster -->
+        <g transform="translate(0, 50)">
+            <rect x="0" y="0" width="120" height="100" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="10" y="30" font-family="monospace" font-size="14" class="ink-fill">K8s Pod</text>
+            
+            <!-- PVC Icon -->
+            <g transform="translate(30, 50)">
+                <path d="M0,0 L40,0 L40,30 L0,30 Z" class="primary-fill" opacity="0.2"/>
+                <text x="5" y="20" font-family="monospace" font-size="12" class="primary-fill">PVC</text>
+            </g>
+        </g>
+
+        <!-- Connection -->
+        <g transform="translate(120, 90)">
+            <path d="M0,0 L80,0" class="ink-stroke" stroke-width="3" stroke-dasharray="5,3"/>
+            <circle cx="40" cy="0" r="10" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="36" y="4" font-size="12" class="ink-fill">SC</text>
+        </g>
+
+        <!-- NFS Server -->
+        <g transform="translate(200, 20)">
+            <path d="M0,20 C0,0 100,0 100,20 L100,120 C100,140 0,140 0,120 Z" class="surface-fill surface-stroke" stroke-width="2"/>
+            <path d="M0,20 C0,40 100,40 100,20" fill="none" class="surface-stroke" stroke-width="2"/>
+            <path d="M0,45 C0,65 100,65 100,45" fill="none" class="surface-stroke" stroke-width="2" opacity="0.3"/>
+            <path d="M0,70 C0,90 100,90 100,70" fill="none" class="surface-stroke" stroke-width="2" opacity="0.3"/>
+            
+            <text x="25" y="100" font-family="monospace" font-size="14" class="ink-fill">NFS</text>
+            
+            <!-- Network Icon -->
+            <g transform="translate(35, 55)">
+                <circle cx="15" cy="15" r="12" class="accent-fill"/>
+                <path d="M10,15 L20,15 M15,10 L15,20" stroke="#fff" stroke-width="2"/>
+            </g>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>

@@ -1,0 +1,78 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #3776ab;       /* Python Blue */
+            --accent-color: #ffd43b;        /* Python Yellow */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #64b5f6;
+                --accent-color: #ffe082;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="accent-fill" opacity="0.6"/>
+        <rect x="0" y="15" width="10" height="10" class="accent-fill" opacity="0.6"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.6"/>
+    </g>
+
+    <!-- Main Illustration: Deep vs Shallow Copy -->
+    <g transform="translate(150, 150)">
+        <!-- Original Object -->
+        <g transform="translate(0, 100)">
+            <rect x="0" y="0" width="80" height="80" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <circle cx="40" cy="40" r="20" class="primary-fill"/>
+            <text x="10" y="-10" font-family="monospace" class="ink-fill">Original</text>
+        </g>
+
+        <!-- Shallow Copy (Shared Reference) -->
+        <g transform="translate(150, 20)">
+            <rect x="0" y="0" width="80" height="80" rx="5" class="surface-fill surface-stroke" stroke-width="2" stroke-dasharray="4,2"/>
+            <path d="M40,80 L-60,140" class="ink-stroke" stroke-width="2" marker-end="url(#arrow)"/>
+            <text x="10" y="-10" font-family="monospace" class="ink-fill">Shallow</text>
+        </g>
+
+        <!-- Deep Copy (New Object) -->
+        <g transform="translate(150, 180)">
+            <rect x="0" y="0" width="80" height="80" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <circle cx="40" cy="40" r="20" class="primary-fill"/>
+            <text x="10" y="100" font-family="monospace" class="ink-fill">Deep</text>
+        </g>
+        
+        <!-- Arrow to Deep -->
+        <path d="M90,140 L140,220" class="ink-stroke" stroke-width="2" stroke-dasharray="4,4"/>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <circle cx="20" cy="20" r="20" class="secondary-fill" opacity="0.5"/>
+        <circle cx="20" cy="20" r="10" class="surface-fill"/>
+    </g>
+</svg>

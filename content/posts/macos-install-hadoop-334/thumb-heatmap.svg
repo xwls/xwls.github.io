@@ -1,0 +1,76 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #ffc107;       /* Hadoop Yellow */
+            --accent-color: #00bcd4;        /* Cyan */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ffd54f;
+                --accent-color: #4dd0e1;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Hadoop on Mac -->
+    <g transform="translate(200, 150)">
+        <!-- Mac Screen -->
+        <g transform="translate(0, 0)">
+            <rect x="0" y="0" width="400" height="250" rx="10" class="surface-fill surface-stroke" stroke-width="2"/>
+            <path d="M0,220 L400,220" class="surface-stroke" stroke-width="2"/>
+            <circle cx="200" cy="235" r="5" class="secondary-fill"/>
+        </g>
+
+        <!-- Elephant (Abstract Hadoop Logo) -->
+        <g transform="translate(140, 60)">
+            <path d="M20,40 Q20,0 60,0 Q100,0 100,40 L100,100 L80,100 L80,60 L40,60 L40,100 L20,100 Z" class="primary-fill"/>
+            <circle cx="40" cy="30" r="5" class="surface-fill"/>
+            <path d="M100,40 Q120,40 120,60 L110,70" fill="none" class="primary-stroke" stroke-width="8" stroke-linecap="round"/>
+        </g>
+
+        <!-- Terminal Window -->
+        <g transform="translate(20, 120)">
+            <rect x="0" y="0" width="180" height="80" rx="2" class="ink-fill" opacity="0.9"/>
+            <text x="10" y="20" font-family="monospace" font-size="10" fill="#fff">> start-all.sh</text>
+            <text x="10" y="35" font-family="monospace" font-size="10" fill="#fff">Starting namenodes...</text>
+            <text x="10" y="50" font-family="monospace" font-size="10" fill="#fff">Starting datanodes...</text>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>

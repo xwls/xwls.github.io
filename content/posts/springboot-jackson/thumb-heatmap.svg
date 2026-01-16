@@ -1,0 +1,80 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #6db33f;       /* Spring Green */
+            --accent-color: #f29111;        /* JSON Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #81c784;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Right -->
+    <g transform="translate(700, 60)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Object to JSON -->
+    <g transform="translate(200, 180)">
+        <!-- Java Object -->
+        <g transform="translate(0, 50)">
+            <rect x="0" y="0" width="100" height="120" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="20" y="30" font-family="monospace" class="ink-fill">User</text>
+            <line x1="10" y1="40" x2="90" y2="40" class="secondary-stroke" stroke-width="2"/>
+            <rect x="10" y="50" width="80" height="10" class="secondary-fill"/>
+            <rect x="10" y="70" width="60" height="10" class="secondary-fill"/>
+            <rect x="10" y="90" width="70" height="10" class="secondary-fill"/>
+        </g>
+
+        <!-- Transformation Arrow -->
+        <g transform="translate(120, 100)">
+            <path d="M0,0 L60,0" class="ink-stroke" stroke-width="3" marker-end="url(#arrow)"/>
+            <polygon points="60,-5 70,0 60,5" class="ink-fill"/>
+            <text x="10" y="-10" font-family="monospace" font-size="12" class="ink-fill">Jackson</text>
+        </g>
+
+        <!-- JSON Document -->
+        <g transform="translate(220, 50)">
+            <rect x="0" y="0" width="120" height="140" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="10" y="30" font-family="monospace" class="accent-fill">{</text>
+            <text x="20" y="50" font-family="monospace" font-size="12" class="ink-fill">"id": 1,</text>
+            <text x="20" y="70" font-family="monospace" font-size="12" class="ink-fill">"name": "..."</text>
+            <text x="20" y="90" font-family="monospace" font-size="12" class="ink-fill">"date": "..."</text>
+            <text x="10" y="120" font-family="monospace" class="accent-fill">}</text>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Left -->
+    <g transform="translate(50, 500)">
+        <text x="0" y="0" font-family="monospace" font-size="20" class="ink-fill" opacity="0.2">{ }</text>
+    </g>
+</svg>

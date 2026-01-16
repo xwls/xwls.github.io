@@ -1,0 +1,89 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #f89820;       /* Java Orange */
+            --accent-color: #5382a1;        /* Java Blue */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ffb74d;
+                --accent-color: #81d4fa;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M620,420 Q520,520 320,500 Q120,480 150,290 Q180,100 420,130 Q660,160 620,420 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Right -->
+    <g transform="translate(700, 60)">
+        <path d="M0,0 L20,0 L20,20 L0,20 Z" fill="none" class="primary-stroke" stroke-width="2"/>
+        <path d="M10,10 L30,10 L30,30 L10,30 Z" fill="none" class="primary-stroke" stroke-width="2" opacity="0.5"/>
+    </g>
+
+    <!-- Main Illustration: Database Procedure Call -->
+    <g transform="translate(200, 180)">
+        <!-- Application Layer -->
+        <g transform="translate(0, 50)">
+            <rect x="0" y="0" width="100" height="120" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="20" y="30" font-family="monospace" font-size="14" class="ink-fill">App</text>
+            <rect x="15" y="50" width="70" height="5" rx="2" class="secondary-fill"/>
+            <rect x="15" y="65" width="50" height="5" rx="2" class="secondary-fill"/>
+            <rect x="15" y="80" width="60" height="5" rx="2" class="secondary-fill"/>
+        </g>
+
+        <!-- Connection Arrows -->
+        <g transform="translate(110, 90)">
+            <!-- Request -->
+            <path d="M0,-10 L120,-10" class="primary-stroke" stroke-width="3" marker-end="url(#arrow)"/>
+            <polygon points="120,-15 130,-10 120,-5" class="primary-fill"/>
+            <text x="30" y="-20" font-family="monospace" font-size="12" class="primary-fill">CALL</text>
+            
+            <!-- Response -->
+            <path d="M120,30 L0,30" class="accent-fill" stroke="var(--accent-color)" stroke-width="3" stroke-dasharray="5,3"/>
+            <polygon points="0,25 -10,30 0,35" class="accent-fill"/>
+            <text x="30" y="50" font-family="monospace" font-size="12" class="accent-fill">Result</text>
+        </g>
+
+        <!-- Database Layer -->
+        <g transform="translate(250, 40)">
+            <path d="M0,20 C0,0 100,0 100,20 L100,120 C100,140 0,140 0,120 Z" class="surface-fill surface-stroke" stroke-width="2"/>
+            <path d="M0,20 C0,40 100,40 100,20" fill="none" class="surface-stroke" stroke-width="2"/>
+            <path d="M0,45 C0,65 100,65 100,45" fill="none" class="surface-stroke" stroke-width="2" opacity="0.3"/>
+            <path d="M0,70 C0,90 100,90 100,70" fill="none" class="surface-stroke" stroke-width="2" opacity="0.3"/>
+            
+            <!-- Stored Procedure Icon -->
+            <g transform="translate(30, 60)">
+                <rect x="0" y="0" width="40" height="40" rx="4" class="ink-fill"/>
+                <text x="8" y="28" font-family="monospace" font-size="24" class="surface-fill" font-weight="bold">{}</text>
+            </g>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Left -->
+    <g transform="translate(50, 500)">
+        <circle cx="10" cy="10" r="2" class="ink-fill"/>
+        <circle cx="25" cy="10" r="2" class="ink-fill"/>
+        <circle cx="40" cy="10" r="2" class="ink-fill"/>
+    </g>
+</svg>

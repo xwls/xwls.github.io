@@ -1,0 +1,84 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #009639;       /* Nginx Green */
+            --accent-color: #f89820;        /* HTTP/Warning Orange */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #4caf50;
+                --accent-color: #ffb74d;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Right -->
+    <g transform="translate(700, 60)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: HTTP to HTTPS Redirect -->
+    <g transform="translate(200, 180)">
+        <!-- Browser Window -->
+        <g transform="translate(0, 0)">
+            <rect x="0" y="0" width="300" height="200" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <rect x="0" y="0" width="300" height="30" rx="5" class="secondary-fill" opacity="0.5"/>
+            <circle cx="15" cy="15" r="5" class="ink-fill" opacity="0.3"/>
+            <circle cx="35" cy="15" r="5" class="ink-fill" opacity="0.3"/>
+            
+            <!-- Address Bar -->
+            <rect x="60" y="5" width="200" height="20" rx="3" class="surface-fill"/>
+            
+            <!-- HTTP (Crossed Out) -->
+            <g transform="translate(80, 80)">
+                <text x="0" y="20" font-family="monospace" font-size="18" class="ink-fill" opacity="0.5">http://</text>
+                <line x1="-5" y1="15" x2="70" y2="15" class="accent-fill" stroke="var(--accent-color)" stroke-width="3"/>
+            </g>
+            
+            <!-- Arrow -->
+            <g transform="translate(150, 100)">
+                <path d="M0,0 L0,30" class="ink-stroke" stroke-width="3" marker-end="url(#arrow)"/>
+                <polygon points="0,35 -5,30 5,30" class="ink-fill"/>
+            </g>
+            
+            <!-- HTTPS (Green Lock) -->
+            <g transform="translate(80, 150)">
+                <path d="M5,10 L5,5 A5,5 0 0,1 15,5 L15,10" fill="none" class="primary-stroke" stroke-width="2"/>
+                <rect x="0" y="10" width="20" height="15" rx="2" class="primary-fill"/>
+                <text x="30" y="22" font-family="monospace" font-size="18" class="primary-fill" font-weight="bold">https://</text>
+            </g>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Left -->
+    <g transform="translate(50, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>

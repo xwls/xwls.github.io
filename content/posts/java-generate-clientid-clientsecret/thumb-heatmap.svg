@@ -1,0 +1,82 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #f89820;       /* Java Orange */
+            --accent-color: #5382a1;        /* Java Blue */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ffb74d;
+                --accent-color: #81d4fa;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M600,400 Q500,550 300,520 Q100,490 130,300 Q160,110 400,140 Q640,170 600,400 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(60, 60)">
+        <rect x="0" y="0" width="40" height="8" rx="4" class="primary-fill" opacity="0.6"/>
+        <rect x="0" y="15" width="25" height="8" rx="4" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="30" width="10" height="8" rx="4" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Key Generation -->
+    <g transform="translate(250, 200)">
+        <!-- ID Card -->
+        <g transform="translate(0, 0)">
+            <rect x="0" y="0" width="120" height="80" rx="8" class="surface-fill surface-stroke" stroke-width="2"/>
+            <rect x="10" y="10" width="30" height="30" rx="15" class="secondary-fill"/>
+            <rect x="50" y="15" width="60" height="8" rx="4" class="ink-fill" opacity="0.8"/>
+            <rect x="50" y="30" width="40" height="8" rx="4" class="ink-fill" opacity="0.5"/>
+            <text x="10" y="65" font-family="monospace" font-size="10" class="accent-fill">Client ID</text>
+        </g>
+
+        <!-- Arrow -->
+        <g transform="translate(130, 40)">
+            <path d="M0,0 L30,0" class="ink-stroke" stroke-width="2" stroke-dasharray="4,2"/>
+            <polygon points="30,-5 40,0 30,5" class="ink-fill"/>
+        </g>
+
+        <!-- Secret Key -->
+        <g transform="translate(180, 10)">
+            <path d="M20,10 L20,40 L30,40 L30,50 L40,50 L40,40 L50,40 L50,10 A15,15 0 1,0 20,10 Z" class="primary-fill"/>
+            <circle cx="35" cy="25" r="5" class="surface-fill"/>
+            <text x="0" y="80" font-family="monospace" font-size="12" class="ink-fill">Secret</text>
+        </g>
+        
+        <!-- Secure Random Particles -->
+        <g transform="translate(160, -30)">
+            <text x="0" y="0" font-size="10" class="accent-fill" opacity="0.8">1</text>
+            <text x="20" y="10" font-size="10" class="accent-fill" opacity="0.6">0</text>
+            <text x="-10" y="20" font-size="10" class="accent-fill" opacity="0.7">1</text>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>

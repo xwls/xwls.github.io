@@ -1,0 +1,88 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --primary-color: #0d6da4;       /* Docker Blue */
+            --accent-color: #2496ed;        /* Docker Light Blue */
+            --ink-color: #2f2e41;
+            --bg-blob-color: #f2f2f2;
+            --surface-color: #ffffff;
+            --surface-border: #2f2e41;
+            --secondary-fill: #e0e0e0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #1D63ED;
+                --accent-color: #57b6ff;
+                --ink-color: #e0e0e0;
+                --bg-blob-color: #374151;
+                --surface-color: #1f2937;
+                --surface-border: #9ca3af;
+                --secondary-fill: #4b5563;
+            }
+        }
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <!-- Background Blob -->
+    <path class="blob-fill" d="M650,450 Q550,550 350,520 Q150,490 180,300 Q210,110 450,140 Q690,170 650,450 Z" opacity="0.8"/>
+
+    <!-- Decorative Corner: Top Left -->
+    <g transform="translate(50, 50)">
+        <rect x="0" y="0" width="10" height="10" class="primary-fill" opacity="0.6"/>
+        <rect x="15" y="0" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="0" y="15" width="10" height="10" class="primary-fill" opacity="0.4"/>
+        <rect x="15" y="15" width="10" height="10" class="primary-fill" opacity="0.2"/>
+    </g>
+
+    <!-- Main Illustration: Docker Installation -->
+    <g transform="translate(200, 180)">
+        <!-- Server/OS -->
+        <g transform="translate(0, 50)">
+            <rect x="0" y="0" width="120" height="140" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+            <text x="30" y="30" font-family="monospace" font-size="14" class="ink-fill">CentOS</text>
+            <line x1="10" y1="40" x2="110" y2="40" class="surface-stroke" stroke-width="2" opacity="0.3"/>
+            
+            <!-- Terminal Lines -->
+            <g transform="translate(15, 60)">
+                <rect x="0" y="0" width="60" height="5" rx="2" class="secondary-fill"/>
+                <rect x="0" y="15" width="80" height="5" rx="2" class="secondary-fill"/>
+                <rect x="0" y="30" width="50" height="5" rx="2" class="secondary-fill"/>
+            </g>
+        </g>
+
+        <!-- Arrow -->
+        <g transform="translate(140, 100)">
+            <path d="M0,0 L40,0" class="ink-stroke" stroke-width="3" marker-end="url(#arrow)"/>
+            <polygon points="40,-5 50,0 40,5" class="ink-fill"/>
+        </g>
+
+        <!-- Docker Whale (Simplified) -->
+        <g transform="translate(210, 60)">
+            <!-- Containers -->
+            <rect x="20" y="0" width="20" height="20" class="accent-fill"/>
+            <rect x="45" y="0" width="20" height="20" class="accent-fill"/>
+            <rect x="10" y="25" width="20" height="20" class="accent-fill"/>
+            <rect x="35" y="25" width="20" height="20" class="accent-fill"/>
+            <rect x="60" y="25" width="20" height="20" class="accent-fill"/>
+            
+            <!-- Whale Body -->
+            <path d="M0,50 Q0,80 30,80 L100,80 Q130,80 130,50 Q130,40 110,40 L0,40 Z" class="primary-fill"/>
+            <circle cx="15" cy="60" r="3" class="surface-fill"/>
+        </g>
+    </g>
+
+    <!-- Decorative Corner: Bottom Right -->
+    <g transform="translate(700, 500)">
+        <path d="M0,20 L20,0 L40,20 L20,40 Z" class="secondary-fill" opacity="0.5"/>
+        <path d="M10,20 L20,10 L30,20 L20,30 Z" class="surface-fill"/>
+    </g>
+</svg>
