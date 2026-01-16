@@ -1,0 +1,86 @@
+<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        /* 1. 定义默认颜色变量 (Light Mode) */
+        :root {
+            --primary-color: #6c63ff;       /* unDraw 经典紫 (可根据需要改为 Oracle 红 #f80000) */
+            --accent-color: #ffbd2e;        /* 点缀色 (警告/高亮) */
+            --ink-color: #2f2e41;           /* 深色线条 */
+            --bg-blob-color: #f2f2f2;       /* 背景装饰 (浅灰) */
+            --surface-color: #ffffff;       /* 屏幕/纸张背景 */
+            --surface-border: #2f2e41;      /* 物体边框 */
+            --secondary-fill: #e0e0e0;      /* 次要填充/阴影 */
+        }
+
+        /* 2. 定义深色模式覆盖 (Dark Mode) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #7d75ff;       /* 提亮紫 */
+                --accent-color: #ffd343;        /* 提亮黄 */
+                --ink-color: #e0e0e0;           /* 线条变白 */
+                --bg-blob-color: #374151;       /* 背景变深灰 */
+                --surface-color: #1f2937;       /* 屏幕变暗 */
+                --surface-border: #9ca3af;      /* 边框变浅灰 */
+                --secondary-fill: #4b5563;      /* 次要填充变暗 */
+            }
+        }
+
+        /* 3. 通用类 */
+        .primary-fill { fill: var(--primary-color); }
+        .primary-stroke { stroke: var(--primary-color); }
+        .accent-fill { fill: var(--accent-color); }
+        .ink-fill { fill: var(--ink-color); }
+        .ink-stroke { stroke: var(--ink-color); }
+        .blob-fill { fill: var(--bg-blob-color); }
+        .surface-fill { fill: var(--surface-color); }
+        .surface-stroke { stroke: var(--surface-border); }
+        .secondary-fill { fill: var(--secondary-fill); }
+        .secondary-stroke { stroke: var(--secondary-fill); }
+    </style>
+
+    <path class="blob-fill" d="M630.5,439.5Q568,529,466.5,516.5Q365,504,286,448.5Q207,393,189.5,297.5Q172,202,267.5,153Q363,104,463.5,125.5Q564,147,628.5,223.5Q693,300,630.5,439.5Z" />
+
+    <g transform="translate(50, 50)">
+        <ellipse cx="20" cy="10" rx="18" ry="6" fill="none" class="primary-stroke" stroke-width="3"/>
+        <path d="M2,10 v12 a18,6 0 0,0 36,0 v-12" fill="none" class="primary-stroke" stroke-width="3" opacity="0.6"/>
+        <path d="M2,26 v12 a18,6 0 0,0 36,0 v-12" fill="none" class="primary-stroke" stroke-width="3" opacity="0.3"/>
+    </g>
+
+    <g transform="translate(720, 520)">
+        <path d="M0,0 L12,12 L0,24" fill="none" class="primary-stroke" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="18" y1="24" x2="35" y2="24" class="primary-stroke" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+    </g>
+
+    <g transform="translate(150, 250)">
+        <rect x="30" y="130" width="60" height="10" class="ink-fill"/>
+        <rect x="55" y="100" width="10" height="30" class="ink-fill"/>
+        <rect x="0" y="0" width="120" height="100" rx="5" class="surface-fill surface-stroke" stroke-width="2"/>
+        <rect x="10" y="10" width="100" height="80" class="secondary-fill" opacity="0.5"/>
+        <line x1="10" y1="50" x2="110" y2="50" class="surface-stroke" stroke-width="2" opacity="0.5"/>
+        <line x1="60" y1="10" x2="60" y2="90" class="surface-stroke" stroke-width="2" opacity="0.5"/>
+    </g>
+
+    <g transform="translate(530, 220)">
+        <rect x="0" y="0" width="100" height="140" rx="5" class="ink-fill"/>
+        <rect x="10" y="20" width="80" height="5" rx="2" class="primary-fill"/>
+        <rect x="10" y="35" width="80" height="5" rx="2" fill="#4a4a6a"/>
+        <rect x="10" y="50" width="80" height="5" rx="2" fill="#4a4a6a"/>
+        <text x="15" y="100" font-family="monospace" font-size="24" class="primary-fill" font-weight="bold">&gt;_</text>
+        <circle cx="80" cy="92" r="3" fill="#00ff00"/>
+    </g>
+
+    <path d="M280,300 Q400,250 520,300" fill="none" class="secondary-stroke" stroke-width="3" stroke-dasharray="10,5"/>
+    
+    <g transform="translate(360, 240)">
+        <path d="M0,20 C0,8 60,8 60,20 C60,32 0,32 0,20" class="primary-fill"/>
+        <path d="M0,20 L0,70 C0,82 60,82 60,70 L60,20" class="primary-fill" opacity="0.8"/>
+        <path d="M0,45 C0,57 60,57 60,45" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.3"/>
+    </g>
+
+    <g transform="translate(430, 320)">
+        <path d="M20,100 L20,160 L40,160 L40,100 Z" class="ink-fill"/>
+        <path d="M50,100 L50,160 L70,160 L70,100 Z" class="ink-fill"/>
+        <path d="M10,40 Q45,100 80,40 Q90,100 80,110 L10,110 Q0,100 10,40" class="primary-fill"/>
+        <circle cx="45" cy="25" r="20" class="ink-fill"/>
+        <path d="M20,50 Q-10,70 10,90" fill="none" class="ink-stroke" stroke-width="8" stroke-linecap="round"/>
+    </g>
+</svg>

@@ -54,7 +54,7 @@ header:
 footer:
   showCopyright: true
   showThemeAttribution: true
-  showAppearanceSwitcher: true
+  showAppearanceSwitcher: false
   showScrollToTop: true
 
 # 作者信息
