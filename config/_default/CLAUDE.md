@@ -15,10 +15,10 @@ Hugo 自动加载 `config/_default/` 目录下的所有 YAML 配置文件。主�
 | 文件 | 职责 |
 |------|------|
 | `hugo.yaml` | 核心配置：baseURL、标题、语言、分页、隐私设置、分类法、输出格式 |
-| `params.yaml` | PaperMod 主题参数：主题切换、社交链接、搜索、封面图、编辑链接等 |
+| `params.yaml` | Congo 主题参数：主页布局、文章显示、页头页脚、作者信息等 |
 | `menus.yaml` | 导航菜单配置 |
 | `languages.yaml` | 多语言支持（当前仅 zh-Hans） |
-| `module.yaml` | Hugo Modules 配置，引入 PaperMod 主题 |
+| `module.yaml` | Hugo Modules 配置，引入 Congo 主题 |
 | `markup.yaml` | Markdown 渲染配置：Goldmark、代码高亮、目录层级 |
 
 ## 关键依赖与配置
@@ -28,7 +28,7 @@ Hugo 自动加载 `config/_default/` 目录下的所有 YAML 配置文件。主�
 ```yaml
 # module.yaml
 imports:
-- path: github.com/adityatelange/hugo-PaperMod
+- path: github.com/jpanther/congo/v2
 ```
 
 ### 核心站点配置
@@ -46,10 +46,16 @@ enableRobotsTXT: true
 
 ```yaml
 # params.yaml (关键项)
-defaultTheme: auto          # 主题切换
-ShowReadingTime: true       # 阅读时间
-ShowCodeCopyButtons: true   # 代码复制
-showtoc: true               # 目录导航
+defaultAppearance: light       # 默认外观
+autoSwitchAppearance: true     # 自动切换
+homepage:
+  layout: page                 # 主页布局
+  showRecent: true             # 显示最新文章
+article:
+  showReadingTime: true        # 阅读时间
+  showTableOfContents: true    # 目录导航
+  showBreadcrumbs: true        # 面包屑导航
+enableSearch: true             # 全局搜索
 ```
 
 ## 数据模型
@@ -63,16 +69,19 @@ showtoc: true               # 目录导航
 ## 常见问题 (FAQ)
 
 **Q: 如何修改站点标题/描述？**
-A: 编辑 `hugo.yaml` 的 `title` 和 `params.yaml` 的 `description`。
+A: 编辑 `hugo.yaml` 的 `title` 和 `languages.yaml` 的 `description`。
 
 **Q: 如何添加/修改导航菜单？**
 A: 编辑 `menus.yaml`，添加条目并设置 `weight` 控制顺序。
 
 **Q: 如何切换主题模式？**
-A: 在 `params.yaml` 设置 `defaultTheme` 为 `light`、`dark` 或 `auto`。
+A: 在 `params.yaml` 设置 `defaultAppearance` 为 `light` 或 `dark`，设置 `autoSwitchAppearance` 控制自动切换。
 
 **Q: 如何升级主题版本？**
-A: 运行 `hugo mod get -u github.com/adityatelange/hugo-PaperMod`。
+A: 运行 `hugo mod get -u github.com/jpanther/congo/v2`。
+
+**Q: 如何修改主页布局？**
+A: 在 `params.yaml` 设置 `homepage.layout`，可选值：`page`、`profile`、`hero`、`card`、`background`、`custom`。
 
 ## 相关文件清单
 
@@ -89,4 +98,5 @@ A: 运行 `hugo mod get -u github.com/adityatelange/hugo-PaperMod`。
 
 | 日期 | 变更内容 |
 |------|----------|
+| 2026-01-16 | 更新文档：主题从 PaperMod 切换至 Congo，更新配置说明 |
 | 2026-01-16 | 初始化模块文档 |

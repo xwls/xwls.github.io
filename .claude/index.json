@@ -1,16 +1,16 @@
 {
   "meta": {
-    "timestamp": "2026-01-16T09:39:38+08:00",
-    "version": "1.0.0",
+    "timestamp": "2026-01-16T11:31:08+08:00",
+    "version": "1.0.1",
     "projectName": "xwls.github.io",
     "projectType": "hugo-static-site"
   },
   "scan": {
-    "totalFilesEstimated": 58,
-    "filesScanned": 52,
-    "coveragePercent": 89.7,
+    "totalFilesEstimated": 60,
+    "filesScanned": 55,
+    "coveragePercent": 91.7,
     "truncated": false,
-    "lastScanDate": "2026-01-16T09:39:38+08:00"
+    "lastScanDate": "2026-01-16T11:31:08+08:00"
   },
   "modules": [
     {
@@ -45,32 +45,31 @@
       "keyFiles": [
         "posts/",
         "about/_index.md",
-        "archives.md",
-        "search.md"
+        "_index.md"
       ],
       "coverage": {
         "scanned": true,
         "gaps": []
       },
       "stats": {
-        "postCount": 42
+        "postCount": 40,
+        "format": "page-bundle"
       }
     },
     {
       "path": "layouts",
       "type": "template",
       "language": "html",
-      "entryFile": "partials/extend_head.html",
+      "entryFile": null,
       "hasTests": false,
       "hasConfig": false,
       "claudeMd": null,
-      "keyFiles": [
-        "partials/extend_head.html"
-      ],
+      "keyFiles": [],
       "coverage": {
         "scanned": true,
         "gaps": []
-      }
+      },
+      "note": "目录为空，自定义模板通过主题提供"
     },
     {
       "path": "static",
@@ -114,6 +113,22 @@
       "claudeMd": null,
       "keyFiles": [
         "hugo.yml"
+      ],
+      "coverage": {
+        "scanned": true,
+        "gaps": []
+      }
+    },
+    {
+      "path": ".claude",
+      "type": "ai-config",
+      "language": "json",
+      "entryFile": "index.json",
+      "hasTests": false,
+      "hasConfig": false,
+      "claudeMd": null,
+      "keyFiles": [
+        "index.json"
       ],
       "coverage": {
         "scanned": true,
@@ -165,11 +180,32 @@
     ]
   },
   "theme": {
-    "name": "PaperMod",
-    "source": "github.com/adityatelange/hugo-PaperMod",
-    "version": "v0.0.0-20260109161122-6c5a8f6b055c",
+    "name": "Congo",
+    "source": "github.com/jpanther/congo/v2",
+    "version": "v2.12.2",
     "managedBy": "Hugo Modules"
   },
+  "contentFormat": {
+    "structure": "page-bundle",
+    "pattern": "posts/{article-name}/index.md"
+  },
   "gaps": [],
-  "recommendations": []
+  "recommendations": [],
+  "changelog": [
+    {
+      "date": "2026-01-16T11:31:08+08:00",
+      "changes": [
+        "主题从 PaperMod 切换至 Congo",
+        "文章结构改为 Page Bundle 格式",
+        "移除 archives.md、search.md、layouts/partials/extend_head.html",
+        "更新模块文档"
+      ]
+    },
+    {
+      "date": "2026-01-16T09:39:38+08:00",
+      "changes": [
+        "初始化项目扫描"
+      ]
+    }
+  ]
 }

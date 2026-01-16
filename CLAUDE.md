@@ -2,7 +2,7 @@
 
 ## 项目愿景
 
-Hugo 静态博客站点，基于 [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题，用于记录技术学习与分享。博客内容涵盖后端开发、云原生、数据库、大数据等多个技术领域。
+Hugo 静态博客站点，基于 [Congo](https://github.com/jpanther/congo) 主题，用于记录技术学习与分享。博客内容涵盖后端开发、云原生、数据库、大数据等多个技术领域。
 
 ## 架构总览
 
@@ -10,14 +10,13 @@ Hugo 静态博客站点，基于 [PaperMod](https://github.com/adityatelange/hug
 xwls.github.io/
 ├── config/_default/    # Hugo 配置文件（YAML 格式）
 ├── content/            # 博客内容（Markdown）
-│   ├── posts/          # 文章目录
+│   ├── posts/          # 文章目录（Page Bundle 格式）
 │   ├── about/          # 关于页面
-│   ├── archives.md     # 归档页
-│   └── search.md       # 搜索页
-├── layouts/            # 自定义布局模板
-│   └── partials/       # 局部模板
+│   └── tags/           # 标签自定义
+├── layouts/            # 自定义布局模板（当前为空）
 ├── static/             # 静态资源
 ├── i18n/               # 国际化翻译
+├── .claude/            # Claude AI 配置
 ├── public/             # 构建输出（已忽略）
 └── .github/workflows/  # CI/CD 配置
 ```
@@ -32,8 +31,9 @@ graph TD
     A --> E["static"]
     A --> F["i18n"]
     A --> G[".github/workflows"]
+    A --> H[".claude"]
 
-    C --> C1["posts (42篇文章)"]
+    C --> C1["posts (40篇文章)"]
     C --> C2["about"]
     C --> C3["tags"]
 
@@ -41,8 +41,8 @@ graph TD
     B --> B2["params.yaml"]
     B --> B3["menus.yaml"]
     B --> B4["module.yaml"]
-
-    D --> D1["partials"]
+    B --> B5["languages.yaml"]
+    B --> B6["markup.yaml"]
 
     click B "./config/_default/CLAUDE.md" "查看配置模块文档"
     click C "./content/CLAUDE.md" "查看内容模块文档"
@@ -54,17 +54,18 @@ graph TD
 |----------|------|----------|----------|
 | `config/_default/` | Hugo 站点配置 | `hugo.yaml` | 是 |
 | `content/` | 博客内容管理 | `posts/` | - |
-| `layouts/` | 自定义模板覆盖 | `partials/extend_head.html` | - |
+| `layouts/` | 自定义模板覆盖（当前为空） | - | - |
 | `static/` | 静态资源 | `favicon.svg` | - |
 | `i18n/` | 国际化翻译 | `zh-Hans.yaml` | - |
 | `.github/workflows/` | CI/CD 自动部署 | `hugo.yml` | - |
+| `.claude/` | Claude AI 配置 | `index.json` | - |
 
 ## 运行与开发
 
 ### 环境要求
 
 - Hugo Extended >= 0.154.5
-- Go >= 1.23 (用于 Hugo Modules)
+- Go >= 1.25 (用于 Hugo Modules)
 - Git
 
 ### 本地开发
@@ -83,8 +84,12 @@ hugo --gc --minify
 
 ### 新建文章
 
+使用 Page Bundle 格式创建文章：
+
 ```bash
-hugo new posts/my-new-post.md
+# 创建文章目录和 index.md
+mkdir -p content/posts/my-new-post
+touch content/posts/my-new-post/index.md
 ```
 
 文章 Front Matter 模板：
@@ -114,21 +119,22 @@ summary: 文章摘要
 
 ## 主题配置
 
-使用 Hugo Modules 引入 PaperMod 主题：
+使用 Hugo Modules 引入 Congo 主题：
 
 ```yaml
 # config/_default/module.yaml
 imports:
-- path: github.com/adityatelange/hugo-PaperMod
+- path: github.com/jpanther/congo/v2
 ```
 
 主要特性配置 (`config/_default/params.yaml`)：
 - 自动主题切换 (light/dark/auto)
 - 阅读时间显示
-- 代码复制按钮
 - 字数统计
 - 目录导航 (TOC)
-- Fuse.js 搜索
+- 面包屑导航
+- 全局搜索
+- 编辑链接
 
 ## 测试策略
 
@@ -142,9 +148,10 @@ imports:
 ### 内容规范
 
 1. 文章使用 Markdown 格式
-2. 文件名使用英文小写，单词间用 `-` 连接
-3. 必须包含 `title`、`date`、`categories`、`tags` 等 Front Matter
-4. 代码块必须指定语言类型
+2. 文章采用 Page Bundle 格式：`posts/article-name/index.md`
+3. 文件名使用英文小写，单词间用 `-` 连接
+4. 必须包含 `title`、`date`、`categories`、`tags` 等 Front Matter
+5. 代码块必须指定语言类型
 
 ### 配置规范
 
@@ -155,16 +162,17 @@ imports:
 
 ### 常见任务
 
-1. **新建文章**: 在 `content/posts/` 创建 `.md` 文件，参考现有文章格式
+1. **新建文章**: 在 `content/posts/` 创建目录，内含 `index.md` 文件
 2. **修改菜单**: 编辑 `config/_default/menus.yaml`
 3. **修改主题参数**: 编辑 `config/_default/params.yaml`
-4. **添加自定义样式/脚本**: 在 `layouts/partials/` 添加覆盖模板
+4. **添加自定义样式/脚本**: 在 `layouts/` 目录添加覆盖模板
 
 ### 关键文件
 
 - 主配置: `config/_default/hugo.yaml`
 - 主题参数: `config/_default/params.yaml`
 - 菜单配置: `config/_default/menus.yaml`
+- 模块配置: `config/_default/module.yaml`
 - 构建脚本: `build.sh` (Vercel)
 
 ### 注意事项
@@ -172,6 +180,7 @@ imports:
 - `themes/` 目录已被 `.gitignore` 忽略，主题通过 Hugo Modules 管理
 - `public/` 为构建输出，不要手动修改
 - 部署配置需保持 Hugo 版本一致 (当前: 0.154.5)
+- 主题已从 PaperMod 切换到 Congo，配置格式有所不同
 
 ---
 
@@ -179,4 +188,5 @@ imports:
 
 | 日期 | 变更内容 |
 |------|----------|
+| 2026-01-16 | 更新文档：主题切换至 Congo，文章结构改为 Page Bundle 格式 |
 | 2026-01-16 | 初始化 CLAUDE.md 文档 |
